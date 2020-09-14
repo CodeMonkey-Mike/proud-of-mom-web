@@ -13,7 +13,7 @@ COPY next-env.d.ts ./
 COPY tsconfig.json ./
 COPY yarn.lock ./
 # COPY .env.local ./
-COPY .env.staging ./
+COPY .env ./
 COPY src ./src/
 
 #COPY . .
