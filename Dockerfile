@@ -12,6 +12,7 @@ COPY babel.config.js ./
 COPY next-env.d.ts ./
 COPY tsconfig.json ./
 COPY yarn.lock ./
+COPY dns_mapping.sh ./
 # COPY .env.local ./
 COPY .env ./
 COPY src ./src/
