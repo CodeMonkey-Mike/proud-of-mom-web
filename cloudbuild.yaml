@@ -16,14 +16,18 @@ steps:
   #   - 'XNSONEKEY=$_XNSONEKEY'
   #   - 'PR_NUMBER=$_PR_NUMBER'
   - name: 'gcr.io/cloud-builders/curl'
-    args: [
-        '-X',
-        'PUT',
-        '-H',
-        '"X-NSONE-KEY: ${_XNSONEKEY}"',
-        '-d',
-        '"{\"zone\":\"proudofmom.com\", \"domain\":\"stage$_PR_NUMBER.proudofmom.com\", \"type\":\"CNAME\", \"answers\":[{\"answer\":[\"ghs.googlehosted.com\"]}]}\"',
-        'https://api.nsone.net/v1/zones/proudofmom.com/stage$_PR_NUMBER.proudofmom.com/CNAME'
+    args: [ '-X', 'PUT', 'https://api.nsone.net/v1/zones/proudofmom.com/stage${_PR_NUMBER}.proudofmom.com/CNAME', '-H', 'X-NSONE-KEY: ${_XNSONEKEY}', '-d', '{
+            "zone": "proudofmom.com",
+            "domain": "stage${_PR_NUMBER}.proudofmom.com",
+            "type": "CNAME",
+            "answers": [
+                {
+                    "answer": [
+                        "ghs.googlehosted.com."
+                    ]
+                }
+            ]
+         }'
       ] 
   # Create mapping domain
   - name: 'gcr.io/cloud-builders/gcloud'
