@@ -12,6 +12,9 @@ steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args: ['./dns_mapping.sh']
+    env:
+    - 'XNSONEKEY=$XNSONEKEY'
+    - 'PR_NUMBER=$_PR_NUMBER'
   # Create mapping domain
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['beta', 'run','domain-mappings','create','--service', 'staging-proudofmom-web', '--domain', 'stage${_PR_NUMBER}.proudofmom.com', '--region', 'us-central1', '--platform', 'managed']
