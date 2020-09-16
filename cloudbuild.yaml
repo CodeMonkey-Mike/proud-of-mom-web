@@ -11,7 +11,7 @@ steps:
   # Create mapping domain
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['beta', 'run','domain-mappings','create','--service', 'staging-proudofmom-web', '--domain', 'stage${_PR_NUMBER}.proudofmom.com', '--region', 'us-central1', '--platform', 'managed']
-    # Create DNS mapping
+  # Create DNS mapping
   - name: 'gcr.io/cloud-builders/curl'
     args: [ '-X', 'PUT', 'https://api.nsone.net/v1/zones/proudofmom.com/stage${_PR_NUMBER}.proudofmom.com/CNAME', '-H', 'X-NSONE-KEY: ${_XNSONEKEY}', '-d', '{
             "zone": "proudofmom.com",
