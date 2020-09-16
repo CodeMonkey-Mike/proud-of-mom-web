@@ -13,7 +13,7 @@ steps:
     entrypoint: 'bash'
     args: ['./dns_mapping.sh']
     env:
-    - 'XNSONEKEY=$XNSONEKEY'
+    - 'XNSONEKEY=$_XNSONEKEY'
     - 'PR_NUMBER=$_PR_NUMBER'
   # Create mapping domain
   - name: 'gcr.io/cloud-builders/gcloud'
