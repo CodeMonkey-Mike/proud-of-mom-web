@@ -20,7 +20,6 @@ COPY src ./src/
 # Installing Dependencies and build
 
 RUN yarn install --only=production
-ENV NEXT_PUBLIC_API_URL ${_API_PREFIX}.proudofmom.com/graphql
 RUN yarn build
 
 EXPOSE 3000
