@@ -5,6 +5,9 @@ steps:
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/proudofmom-web:$_PR_NUMBER']
+  # Delete mapping domain
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['beta', 'run','domain-mappings','delete','--service', '$_PREFIX-proudofmom-web', '--domain', 'stage${_PR_NUMBER}.proudofmom.com', '--region', 'us-central1', '--platform', 'managed']
   # Create mapping domain
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['beta', 'run','domain-mappings','create','--service', '$_PREFIX-proudofmom-web', '--force-override', '--domain', 'stage${_PR_NUMBER}.proudofmom.com', '--region', 'us-central1', '--platform', 'managed']
