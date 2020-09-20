@@ -2,6 +2,8 @@ steps:
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/proudofmom-web:$_PR_NUMBER', '.']
+    env: 
+    - 'NEXT_PUBLIC_API_UR=$_API_PREFIX.proudofmom.com/graphql'
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/proudofmom-web:$_PR_NUMBER']
