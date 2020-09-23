@@ -13,7 +13,7 @@
     "lint:fix": "eslint src/ --ext .ts,.tsx,.js,.jsx --fix",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "release": "node release/autoTag.js -auto"
+    "release": "node release/autoTag.js"
   },
   "license": "ISC",
   "dependencies": {
