@@ -7,7 +7,9 @@ const getNewTag = currentVersion => {
   let prefixVersion = 'stg';
   const isProdTag = Object.values(process.argv).includes('-prod');
   if(isProdTag) prefixVersion = 'v';
-  const version = currentVersion.replace(prefixVersion, '.');
+  // console.log(prefixVersion);
+  // console.log(currentVersion);
+  const version = currentVersion.replace(prefixVersion, '');
   const partialVersion = version.split('.');
   const major = parseInt(partialVersion[0], 10);
   let minor = parseInt(partialVersion[1], 10);
@@ -34,7 +36,7 @@ const main = async () => {
 
     if( !res.stdout.includes('On branch master')) throw new Error('Not on master branch.');
 
-    if( res.stdout.includes('modified:')) throw new Error('There are uncommitted changes. Please commit or stash the changes before continue.');
+    // if( res.stdout.includes('modified:')) throw new Error('There are uncommitted changes. Please commit or stash the changes before continue.');
 
     console.log('Pulling latest on master branch and create tags...');
 
