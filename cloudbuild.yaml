@@ -4,7 +4,7 @@ steps:
     args: ['build', '--build-arg', 'NEXT_PUBLIC_API_URL=https://$_API_PREFIX.proudofmom.com/graphql', 'gcr.io/$PROJECT_ID/proudofmom-web', '.']
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/proudofmom-web:$_PR_NUMBER']
+    args: ['push', 'gcr.io/$PROJECT_ID/proudofmom-web']
   # Delete mapping domain
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['beta', 'run','domain-mappings', 'delete', '--domain', 'stage${_PR_NUMBER}.proudofmom.com', '--region', 'us-central1', '--platform', 'managed']
