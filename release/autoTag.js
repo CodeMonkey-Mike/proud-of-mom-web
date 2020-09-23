@@ -42,7 +42,7 @@ const main = async () => {
 
     await exec('git fetch --tags');
 
-    res = await exec('git describe --tags --abbrev=0');
+    res = await exec('git describe --always --tags --abbrev=0');
 
     let tagName = '';
 
