@@ -3,38 +3,35 @@ const readline = require('readline');
 const child_process = require('child_process');
 const exec = util.promisify(child_process.exec);
 
-const getNewTag = currentVersion => {
+const getNewTag = (currentVersion) => {
   let prefixVersion = 'stg';
   const isProdTag = Object.values(process.argv).includes('-prod');
-  if(isProdTag) prefixVersion = 'v';
-  // console.log(prefixVersion);
-  // console.log(currentVersion);
+  if (isProdTag) prefixVersion = 'v';
   const version = currentVersion.replace(prefixVersion, '');
   const partialVersion = version.split('.');
   const major = parseInt(partialVersion[0], 10);
   let minor = parseInt(partialVersion[1], 10);
   let patch = parseInt(partialVersion[2], 10) + 1;
-  if(patch === 100) {
+  if (patch === 100) {
     minor += 1;
     patch = 0;
   }
   return `v${major}.${minor}.${patch}`;
 };
 
-
-const escapeTagName = str => str.replace(/\'/g, "\\'");
+const escapeTagName = (str) => str.replace(/\'/g, "\\'");
 
 const main = async () => {
   try {
     const isAutoTag = Object.values(process.argv).includes('-auto');
 
-    if(!isAutoTag && process.argv.length <= 2) throw new Error('Tag name does not specified');
+    if (!isAutoTag && process.argv.length <= 2) throw new Error('Tag name does not specified');
 
     let res = await exec('git status');
-    
-    if( !res.stdout ) throw new Error('Invalid git command.');
 
-    if( !res.stdout.includes('On branch master')) throw new Error('Not on master branch.');
+    if (!res.stdout) throw new Error('Invalid git command.');
+
+    if (!res.stdout.includes('On branch master')) throw new Error('Not on master branch.');
 
     // if( res.stdout.includes('modified:')) throw new Error('There are uncommitted changes. Please commit or stash the changes before continue.');
 
@@ -48,7 +45,7 @@ const main = async () => {
 
     let tagName = '';
 
-    if(isAutoTag) {
+    if (isAutoTag) {
       const commitMsg = await exec(`git log --merges --format=%b ${res.stdout.trim()}...`);
       tagName = commitMsg.stdout;
     } else {
@@ -61,11 +58,11 @@ const main = async () => {
 
     const rl = readline.createInterface(process.stdin, process.stdout);
 
-    rl.question('Are you ready to proceed? [yes]/no: ', async answer => {
-      if(answer !== 'no') {
+    rl.question('Are you ready to proceed? [yes]/no: ', async (answer) => {
+      if (answer !== 'no') {
         res = await exec(gitTagCommand);
 
-        if(res.stderr) throw new Error('Create tag failed.');
+        if (res.stderr) throw new Error('Create tag failed.');
 
         console.log(`Pusding tag ${newTagVersion}`);
 
@@ -76,10 +73,9 @@ const main = async () => {
       }
       process.exit();
     });
-  }
-  catch (e) {
+  } catch (e) {
     throw new Error(e.message);
   }
-}
+};
 
 main();
