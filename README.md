@@ -34,72 +34,52 @@
 - [x] [lint-staged](https://github.com/okonet/lint-staged)
 - [x] [Husky](https://github.com/typicode/husky)
 
+
+## Get started
+
+To communicate with server side before start you need to set it up with the server, go to the server repository: [Link](https://github.com/CodeMonkey-Mike/proud-of-mom-be).
+
 ## Quick start 
 
-#### Install node modules
+#### Start development 
 
-`npm install` or `yarn`
+- Install node packages and run development mode.
 
-#### Start development
-
-Before start you need pull and run with server, reference here: [Pull](http://git.dominitech.com/bryan/proud-of-mom-server)
-Make sure you already install postgres under your local. Check out the .env.example in server repo.
-
-`npm run dev` or `yarn dev`
+`yarn && yarn dev`
 
 #### Test
 
-`npm run test` or `yarn test`
+`yarn test`
 
 #### Production build
 
-`npm run build` or `yarn build`
+`yarn build`
 
-## Working processes
+## Staging release and confirm for production release
 
-This one explains the process step to step from picking task and go to finish the ticket.
+- Merge the PR into master, at this step the automation process will be triggered.
 
-### Step 01:
+## Production release
 
-- After checked out the repository, go to the source folder and create a branch for development.
+> ! One hint: for the first release, the `-auto` tag won't work completely, therefore we need to release by manual step to make sure the `-auto` tag and encasement will be worked afterward.
 
-Example: At master branch, we do
+There are two kinds of release step:
 
-```
-git pull
+#### 1. Automatically
 
-git checkout -b <Name_of_branch> // for example f/abc
-
-git push origin f/abc
-```
-
-### Step 02:
-
-Code something, do what you need to do.
-
-Example
+Checkout branch master and run the command line:
 
 ```
-git add ./src/path/files.(ts,tsx)
 
-...
+yarn release -auto
 
-git commit -m 'f/abc: [POM] create new abc'
 ```
+- `-auto`: this tag will be enabled the automation process by collecting the commit message to put into release information and increase the version number.
 
-Commit message follow the format: `BRANCH_NAME: [REPO_NAME] MESSAGE TEXT` 
+#### 2. Manually
 
-### Step 03:
+```
+// example
+yarn release -a v1.0.0 -m '- This is first release'
 
-Create/Review pull request:
-
-- Create pull request from your branch to master.
-- Pull request needs approved before merge to master.
-- If everything is ok, click merge the pull request and delete old branch.
-
-### Step 04:
-
-When the PR is created, the build process will be executed. If the process successful, one new domain base on PR number will be created.
-
-Example:
-PR number is #1, the sub domain to preview is `stage1.proudofmom.com` with format `stage{PR_NUMBER}.proudofmom.com`
+```
