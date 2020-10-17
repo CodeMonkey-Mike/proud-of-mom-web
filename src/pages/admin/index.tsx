@@ -1,13 +1,13 @@
 import { useMutation } from '@apollo/client';
 import styled from 'styled-components';
-import { withApollo } from '../helper/apollo';
+import { withApollo } from '../../helper/apollo';
 import { useState } from 'react';
-import { LOGIN } from '../graphql/mutation/user.mutattion';
+import { LOGIN } from '../../graphql/mutation/user.mutattion';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
 import Button from 'src/atoms/Button';
-import { UserProfile } from './profile/user';
+import { UserProfile } from '../profile/user';
 
 const Wrapper = styled.div`
   padding: 5rem;
