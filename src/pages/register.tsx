@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import Link from 'next/link';
 import Button from 'src/atoms/Button';
 import { REGISTER } from '../graphql/mutation/user.mutattion';
-import { UserProfile } from './profile/user';
+import UserProfile from './profile';
 
 const Wrapper = styled.div`
   padding: 5rem;

@@ -4,7 +4,7 @@ const Wrapper = styled.div`
   padding: 5rem;
 `;
 
-export const UserProfile = (user: { email: string; username: string }) => {
+const UserProfile = (user: { email: string; username: string }) => {
   const { email, username } = user;
   return (
     <Wrapper>
@@ -15,3 +15,5 @@ export const UserProfile = (user: { email: string; username: string }) => {
     </Wrapper>
   );
 };
+
+export default UserProfile;
