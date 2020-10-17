@@ -3,15 +3,15 @@ import styled from 'styled-components';
 import { withApollo } from '../helper/apollo';
 import { useState } from 'react';
 import { LOGIN } from '../graphql/mutation/user.mutattion';
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import Link from "next/link";
+import Link from 'next/link';
 import Button from 'src/atoms/Button';
-import { ProfileSuccessful } from "./register";
+import UserProfile from './profile';
 
 const Wrapper = styled.div`
   padding: 5rem;
-`; 
+`;
 
 const FieldWrapper = styled.div`
   padding: 0;
@@ -23,103 +23,89 @@ const FormLabel = styled.p`
   margin-bottom: 10px;
 `;
 
-const Loading = ({text}: {text:string}) => {
-  return (
-  <span>{text}</span>
-  )
+const Loading = ({ text }: { text: string }) => {
+  return <span>{text}</span>;
 };
 
 const Text = styled.p`
-  margin-top:10px;
+  margin-top: 10px;
   font-size: 14px;
 `;
 
 type LoginType = {
-  usernameOrEmail: string,
-  password: string
-}
+  usernameOrEmail: string;
+  password: string;
+};
 
 const Login = () => {
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const [useLogin] = useMutation(LOGIN);
-  const [data,setData] = useState<any>();
-  
-  const onLogin = async (values:LoginType) => {
+  const [data, setData] = useState<any>();
+
+  const onLogin = async (values: LoginType) => {
     setLoading(true);
     const res = await useLogin({
       variables: {
-        ...values
-      }
-    })
+        ...values,
+      },
+    });
     setData(res.data.login);
     setLoading(false);
-  } 
+  };
   if (loading) {
-    return <Loading text='Loading...'/>;
+    return <Loading text="Loading..." />;
   }
 
-  if( data && data.errors && data.errors.length > 0) {
+  if (data && data.errors && data.errors.length > 0) {
     alert(`${data.errors[0].field} : ${data.errors[0].message}`);
-  } else if(data && data.user) {
-    return (
-      <ProfileSuccessful {...data.user}/>
-    )
+  } else if (data && data.user) {
+    return <UserProfile {...data.user} />;
   }
 
   const initialValues = {
     usernameOrEmail: '',
     password: '',
   };
-   
+
   return (
     <Wrapper>
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
           onLogin(values);
-        }}  
-        validationSchema={
-          () => {
-            return Yup.object().shape({
-              usernameOrEmail: Yup.string().required('Username is Required!'),
-              password: Yup.string().required('Password is Required!'),
-            });
-          }
-        }
+        }}
+        validationSchema={() => {
+          return Yup.object().shape({
+            usernameOrEmail: Yup.string().required('Username is Required!'),
+            password: Yup.string().required('Password is Required!'),
+          });
+        }}
       >
-      {({values, errors, touched, handleSubmit, isSubmitting }) => (
+        {({ values, errors, touched, handleSubmit, isSubmitting }) => (
           <Form onSubmit={handleSubmit} method="post">
             <FieldWrapper>
               <FormLabel>Username / Email</FormLabel>
               <div>
-                <Field
-                  name='usernameOrEmail' 
-                  type='text'
-                  value={values.usernameOrEmail}
-                />
+                <Field name="usernameOrEmail" type="text" value={values.usernameOrEmail} />
               </div>
-              {errors.usernameOrEmail && touched.usernameOrEmail && (
-                <p>{errors.usernameOrEmail}</p>
-              )}
+              {errors.usernameOrEmail && touched.usernameOrEmail && <p>{errors.usernameOrEmail}</p>}
             </FieldWrapper>
             <FieldWrapper>
               <FormLabel>Password</FormLabel>
               <div>
-                <Field
-                  name='password' 
-                  type='password'
-                  value={values.password}
-                />
+                <Field name="password" type="password" value={values.password} />
               </div>
-              {errors.password && touched.password && (
-                <p>{errors.password}</p>
-              )}
+              {errors.password && touched.password && <p>{errors.password}</p>}
             </FieldWrapper>
-            <Button disabled={isSubmitting} size='small' variant='outlined' >Login</Button>
-        </Form>
+            <Button disabled={isSubmitting} size="small" variant="outlined">
+              Login
+            </Button>
+          </Form>
         )}
-      </Formik> 
-      <Text>Don't have an account? <Link href='/'>Register.</Link></Text> 
+      </Formik>
+      <Text>
+        Don't have an account? <Link href="/">Register.</Link>
+      </Text>
     </Wrapper>
   );
 };
