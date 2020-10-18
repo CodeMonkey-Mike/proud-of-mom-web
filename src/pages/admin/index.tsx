@@ -1,21 +1,25 @@
+import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import styled from 'styled-components';
 import { withApollo } from '../../helper/apollo';
-import { useState } from 'react';
 import { LOGIN } from '../../graphql/mutation/user.mutattion';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import Link from 'next/link';
 import Button from 'src/atoms/Button';
 import UserProfile from '../profile';
+import { Box, Flex, Grid } from 'theme-ui';
 
-const Wrapper = styled.div`
-  padding: 5rem;
+const Wrapper = styled(Flex)`
+  padding: 2rem;
 `;
 
 const FieldWrapper = styled.div`
   padding: 0;
   margin-bottom: 10px;
+  input {
+    width: 100%;
+    padding: 5px;
+  }
 `;
 
 const FormLabel = styled.p`
@@ -26,11 +30,6 @@ const FormLabel = styled.p`
 const Loading = ({ text }: { text: string }) => {
   return <span>{text}</span>;
 };
-
-const Text = styled.p`
-  margin-top: 10px;
-  font-size: 14px;
-`;
 
 type LoginType = {
   usernameOrEmail: string;
@@ -68,44 +67,53 @@ const Login = () => {
   };
 
   return (
-    <Wrapper>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={(values) => {
-          onLogin(values);
-        }}
-        validationSchema={() => {
-          return Yup.object().shape({
-            usernameOrEmail: Yup.string().required('Username is Required!'),
-            password: Yup.string().required('Password is Required!'),
-          });
+    <Wrapper
+      sx={{
+        justifyContent: 'center',
+      }}
+    >
+      <Grid
+        sx={{
+          width: ['90%', '70%', '25%'],
         }}
       >
-        {({ values, errors, touched, handleSubmit, isSubmitting }) => (
-          <Form onSubmit={handleSubmit} method="post">
-            <FieldWrapper>
-              <FormLabel>Username / Email</FormLabel>
-              <div>
-                <Field name="usernameOrEmail" type="text" value={values.usernameOrEmail} />
-              </div>
-              {errors.usernameOrEmail && touched.usernameOrEmail && <p>{errors.usernameOrEmail}</p>}
-            </FieldWrapper>
-            <FieldWrapper>
-              <FormLabel>Password</FormLabel>
-              <div>
-                <Field name="password" type="password" value={values.password} />
-              </div>
-              {errors.password && touched.password && <p>{errors.password}</p>}
-            </FieldWrapper>
-            <Button disabled={isSubmitting} size="small" variant="outlined">
-              Login
-            </Button>
-          </Form>
-        )}
-      </Formik>
-      <Text>
-        Don't have an account? <Link href="/">Register.</Link>
-      </Text>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={(values) => {
+            onLogin(values);
+          }}
+          validationSchema={() => {
+            return Yup.object().shape({
+              usernameOrEmail: Yup.string().required('Username is Required!'),
+              password: Yup.string().required('Password is Required!'),
+            });
+          }}
+        >
+          {({ values, errors, touched, handleSubmit, isSubmitting }) => (
+            <Form onSubmit={handleSubmit} method="post">
+              <FieldWrapper>
+                <FormLabel>Username / Email</FormLabel>
+                <Box>
+                  <Field name="usernameOrEmail" type="text" value={values.usernameOrEmail} />
+                </Box>
+                {errors.usernameOrEmail && touched.usernameOrEmail && (
+                  <p>{errors.usernameOrEmail}</p>
+                )}
+              </FieldWrapper>
+              <FieldWrapper>
+                <FormLabel>Password</FormLabel>
+                <Box>
+                  <Field name="password" type="password" value={values.password} />
+                </Box>
+                {errors.password && touched.password && <p>{errors.password}</p>}
+              </FieldWrapper>
+              <Button disabled={isSubmitting} size="small" variant="outlined">
+                Login
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </Grid>
     </Wrapper>
   );
 };

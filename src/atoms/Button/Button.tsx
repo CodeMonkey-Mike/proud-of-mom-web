@@ -4,6 +4,7 @@ import { buttonStyle, colorStyle, buttonSize } from '../../theme/customVariant';
 
 const ButtonStyled = styled.button`
   cursor: pointer;
+  width: 100%;
   ${buttonStyle}
   ${colorStyle}
   ${buttonSize}
