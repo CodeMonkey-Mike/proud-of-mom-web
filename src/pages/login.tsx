@@ -10,12 +10,18 @@ import Button from 'src/atoms/Button';
 import UserProfile from './profile';
 
 const Wrapper = styled.div`
-  padding: 5rem;
+  padding: 2rem 0;
+  max-width: 300px;
+  margin: auto;
 `;
 
 const FieldWrapper = styled.div`
   padding: 0;
   margin-bottom: 10px;
+  input {
+    width: 100%;
+    padding: 5px;
+  }
 `;
 
 const FormLabel = styled.p`

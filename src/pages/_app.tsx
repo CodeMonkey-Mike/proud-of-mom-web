@@ -5,7 +5,15 @@ import { theme } from 'src/theme';
 import Layout from 'src/components/Layout/Layout';
 import { GlobalStyle } from 'src/styled/global.style';
 
-export default function NextApp({ Component, pageProps }: AppProps) {
+export default function NextApp({ Component, pageProps, router }: AppProps) {
+  if (router.pathname.includes('admin')) {
+    return (
+      <ThemeProvider theme={theme}>
+        <Component {...pageProps} />
+        <GlobalStyle />
+      </ThemeProvider>
+    );
+  }
   return (
     <ThemeProvider theme={theme}>
       <Layout>

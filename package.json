@@ -15,6 +15,7 @@
     "build-storybook": "build-storybook",
     "release": "node release/autoTag.js"
   },
+  "proxy": "https://proudofmom.com/",
   "license": "ISC",
   "dependencies": {
     "@apollo/client": "^3.1.3",
