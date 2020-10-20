@@ -17,7 +17,7 @@ export const REGISTER = gql`
 `;
 
 export const LOGIN = gql`
-  mutation login($usernameOrEmail: String!, $password: String!, $role_id: Number!) {
+  mutation login($usernameOrEmail: String!, $password: String!, $role_id: Float) {
     login(usernameOrEmail: $usernameOrEmail, password: $password, role_id: $role_id) {
       errors {
         field
@@ -29,5 +29,11 @@ export const LOGIN = gql`
         email
       }
     }
+  }
+`;
+
+export const LOGOUT = gql`
+  mutation logout {
+    logout
   }
 `;

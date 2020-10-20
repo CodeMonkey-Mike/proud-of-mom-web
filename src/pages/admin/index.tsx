@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import styled from 'styled-components';
 import { withApollo } from '../../helper/apollo';
 import { LOGIN } from '../../graphql/mutation/user.mutattion';
+import { LOGGED_IN } from '../../graphql/query/user.query';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Button from 'src/atoms/Button';
 import UserProfile from '../profile';
 import { Box, Flex, Grid } from 'theme-ui';
+import Loading from '../../components/Loading/Loading';
 
 const Wrapper = styled(Flex)`
   padding: 2rem;
@@ -27,39 +29,38 @@ const FormLabel = styled.p`
   margin-bottom: 10px;
 `;
 
-const Loading = ({ text }: { text: string }) => {
-  return <span>{text}</span>;
-};
-
 type LoginType = {
   usernameOrEmail: string;
   password: string;
   role_id?: number;
 };
 
-const Login = () => {
-  const [loading, setLoading] = useState(false);
+const Admin = () => {
   const [useLogin] = useMutation(LOGIN);
-  const [data, setData] = useState<any>();
+  const [loader, setLoader] = useState(false);
+  const { loading, error, data } = useQuery(LOGGED_IN);
+  const [userData, setUserData] = useState<any>();
 
   const onLogin = async (values: LoginType) => {
-    setLoading(true);
+    setLoader(true);
     const res = await useLogin({
       variables: {
         ...values,
       },
     });
-    setData(res.data.login);
-    setLoading(false);
+    setUserData(res.data.login);
+    setLoader(false);
   };
-  if (loading) {
+  if (loader || loading) {
     return <Loading text="Loading..." />;
   }
-
-  if (data && data.errors && data.errors.length > 0) {
-    alert(`${data.errors[0].field} : ${data.errors[0].message}`);
-  } else if (data && data.user) {
-    return <UserProfile {...data.user} />;
+  if (error) return `Error! ${error.message}`;
+  if (userData && userData.errors && userData.errors.length > 0) {
+    alert(`${userData.errors[0].field} : ${userData.errors[0].message}`);
+  } else if (data && data.me) {
+    return <UserProfile {...data.me} />;
+  } else if (userData && userData.user) {
+    return <UserProfile {...userData.user} />;
   }
 
   const initialValues = {
@@ -122,4 +123,4 @@ const Login = () => {
     </Wrapper>
   );
 };
-export default withApollo(Login);
+export default withApollo(Admin);
