@@ -34,6 +34,7 @@ const Loading = ({ text }: { text: string }) => {
 type LoginType = {
   usernameOrEmail: string;
   password: string;
+  role_id?: number;
 };
 
 const Login = () => {
@@ -64,6 +65,7 @@ const Login = () => {
   const initialValues = {
     usernameOrEmail: '',
     password: '',
+    role_id: '',
   };
 
   return (
@@ -80,7 +82,10 @@ const Login = () => {
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            onLogin(values);
+            onLogin({
+              ...values,
+              role_id: 1,
+            });
           }}
           validationSchema={() => {
             return Yup.object().shape({
