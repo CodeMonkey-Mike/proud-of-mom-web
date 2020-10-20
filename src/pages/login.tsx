@@ -1,12 +1,14 @@
-import { useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import styled from 'styled-components';
+import Link from 'next/link';
+import * as Yup from 'yup';
+import { Formik, Form, Field } from 'formik';
 import { withApollo } from '../helper/apollo';
 import { useState } from 'react';
 import { LOGIN } from '../graphql/mutation/user.mutattion';
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-import Link from 'next/link';
+import { LOGGED_IN } from '../graphql/query/user.query';
 import Button from 'src/atoms/Button';
+import Loading from '../components/Loading/Loading';
 import UserProfile from './profile';
 
 const Wrapper = styled.div`
@@ -29,10 +31,6 @@ const FormLabel = styled.p`
   margin-bottom: 10px;
 `;
 
-const Loading = ({ text }: { text: string }) => {
-  return <span>{text}</span>;
-};
-
 const Text = styled.p`
   margin-top: 10px;
   font-size: 14px;
@@ -44,28 +42,32 @@ type LoginType = {
 };
 
 const Login = () => {
-  const [loading, setLoading] = useState(false);
   const [useLogin] = useMutation(LOGIN);
-  const [data, setData] = useState<any>();
+  const [loader, setLoader] = useState(false);
+  const { loading, error, data } = useQuery(LOGGED_IN);
+  const [userData, setUserData] = useState<any>();
 
   const onLogin = async (values: LoginType) => {
-    setLoading(true);
+    setLoader(true);
     const res = await useLogin({
       variables: {
         ...values,
       },
     });
-    setData(res.data.login);
-    setLoading(false);
+    setUserData(res.data.login);
+    setLoader(false);
   };
-  if (loading) {
+  if (loader || loading) {
     return <Loading text="Loading..." />;
   }
+  if (error) return `Error! ${error.message}`;
 
-  if (data && data.errors && data.errors.length > 0) {
-    alert(`${data.errors[0].field} : ${data.errors[0].message}`);
-  } else if (data && data.user) {
-    return <UserProfile {...data.user} />;
+  if (userData && userData.errors && userData.errors.length > 0) {
+    alert(`${userData.errors[0].field} : ${userData.errors[0].message}`);
+  } else if (data && data.me) {
+    return <UserProfile {...data.me} />;
+  } else if (userData && userData.user) {
+    return <UserProfile {...userData.user} />;
   }
 
   const initialValues = {

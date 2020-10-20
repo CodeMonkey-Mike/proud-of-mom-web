@@ -1,5 +1,11 @@
-import Button from 'src/atoms/Button';
+import { useMutation } from '@apollo/client';
 import styled from 'styled-components';
+import { Box } from 'theme-ui';
+import Router from 'next/router';
+import Button from 'src/atoms/Button';
+import { withApollo } from 'src/helper/apollo';
+import { UserInformationTypes } from 'src/Types/User';
+import { LOGOUT } from '../../graphql/mutation/user.mutattion';
 
 const Wrapper = styled.div`
   padding: 2rem;
@@ -10,19 +16,25 @@ const Wrapper = styled.div`
   }
 `;
 
-const UserProfile = (user: { email: string; username: string }) => {
-  const { email, username } = user;
+const Profile = ({ username, email }: UserInformationTypes) => {
+  const [useLogout] = useMutation(LOGOUT);
+
+  const onLogout = () => {
+    useLogout().then((res) => {
+      res.data.logout && Router.reload();
+    });
+  };
   return (
     <Wrapper>
-      <div>
+      <Box>
         Hello! {username} <br />
-        Your email: {email}
-        <Button size="small" variant="outlined" onClick={() => window.location.reload()}>
+        Your email: {email} <br />
+        <Button size="small" variant="outlined" onClick={() => onLogout()}>
           Logout
         </Button>
-      </div>
+      </Box>
     </Wrapper>
   );
 };
 
-export default UserProfile;
+export default withApollo(Profile);

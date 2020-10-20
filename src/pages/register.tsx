@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -7,6 +7,8 @@ import Link from 'next/link';
 import Button from 'src/atoms/Button';
 import { REGISTER } from '../graphql/mutation/user.mutattion';
 import UserProfile from './profile';
+import { LOGGED_IN } from 'src/graphql/query/user.query';
+import { withApollo } from 'src/helper/apollo';
 
 const Wrapper = styled.div`
   padding: 2rem 0;
@@ -43,23 +45,25 @@ type RegisterType = {
 };
 
 const Register = () => {
-  const [loading, setLoading] = useState(false);
   const [useRegister] = useMutation(REGISTER);
-  const [data, setData] = useState<any>();
+  const [loader, setLoader] = useState(false);
+  const { loading, error, data } = useQuery(LOGGED_IN);
+  const [userData, setUserData] = useState<any>();
 
   const onRegister = async (values: RegisterType) => {
-    setLoading(true);
+    setLoader(true);
     const res = await useRegister({
       variables: {
         ...values,
       },
     });
-    setData(res.data.register);
-    setLoading(false);
+    setUserData(res.data.register);
+    setLoader(false);
   };
-  if (loading) {
+  if (loader || loading) {
     return <Loading text="Loading..." />;
   }
+  if (error) return `Error! ${error.message}`;
 
   const initialValues = {
     email: '',
@@ -69,8 +73,10 @@ const Register = () => {
 
   if (data && data.errors && data.errors.length > 0) {
     alert(`${data.errors[0].field} : ${data.errors[0].message}`);
-  } else if (data && data.user) {
-    return <UserProfile {...data.user} />;
+  } else if (data && data.me) {
+    return <UserProfile {...data.me} />;
+  } else if (userData && userData.user) {
+    return <UserProfile {...userData.user} />;
   }
 
   return (
@@ -123,4 +129,4 @@ const Register = () => {
     </Wrapper>
   );
 };
-export default Register;
+export default withApollo(Register);

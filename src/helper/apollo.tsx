@@ -8,7 +8,7 @@ function createIsomorphLink() {
   const { HttpLink } = require('@apollo/client/link/http');
   return new HttpLink({
     uri: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/graphql',
-    credentials: 'same-origin',
+    credentials: 'include',
   });
 }
 
@@ -67,5 +67,6 @@ export function withApollo(PageComponent: NextPage, {} = {}) {
 
     WithApollo.displayName = `withApollo(${displayName})`;
   }
+
   return WithApollo;
 }
