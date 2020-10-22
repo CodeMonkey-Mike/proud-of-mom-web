@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { ApolloProvider, ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 import { NextPage } from 'next';
 
@@ -41,7 +41,7 @@ export function useApollo(initialState: NormalizedCacheObject) {
   return store;
 }
 
-export function withApollo(PageComponent: NextPage, {} = {}) {
+export function withApollo(PageComponent: NextPage & any, {} = {}) {
   const WithApollo = ({
     apolloClient,
     apolloState,

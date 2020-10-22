@@ -9,12 +9,12 @@ type LogoProps = {
 };
 
 const Logo: React.FC<LogoProps> = ({ imageUrl, alt, onClick }) => {
-  function onLogoClick() {
+  const onLogoClick = () => {
     Router.push('/');
     if (onClick) {
       onClick();
     }
-  }
+  };
   return (
     <LogoBox onClick={onLogoClick}>
       <LogoImage src={imageUrl} alt={alt} />

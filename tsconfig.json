@@ -2,17 +2,11 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "commonjs",
-    "lib": [
-      "dom",
-      "es6",
-      "es2017",
-      "esnext",
-      "esnext.asynciterable"
-    ],
+    "lib": ["dom", "es6", "es2017", "esnext", "esnext.asynciterable"],
     "sourceMap": true,
     "moduleResolution": "node",
     "removeComments": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "noImplicitThis": true,
@@ -34,15 +28,6 @@
     "noEmit": true,
     "isolatedModules": true
   },
-  "exclude": [
-    "node_modules",
-    "server",
-    ".next",
-    "out"
-  ],
-  "include": [
-    "next-env.d.ts",
-    "./src/**/*.tsx",
-    "./src/**/*.ts"
-  ]
+  "exclude": ["node_modules", "server", ".next", "out"],
+  "include": ["next-env.d.ts", "./src/**/*.tsx", "./src/**/*.ts"]
 }

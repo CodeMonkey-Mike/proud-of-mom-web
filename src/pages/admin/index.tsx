@@ -1,32 +1,25 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import styled from 'styled-components';
+import { Flex, Text } from 'theme-ui';
 import { withApollo } from '../../helper/apollo';
 import { LOGIN } from '../../graphql/mutation/user.mutattion';
 import { LOGGED_IN } from '../../graphql/query/user.query';
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-import Button from 'src/atoms/Button';
 import UserProfile from '../profile';
-import { Box, Flex, Grid } from 'theme-ui';
 import Loading from '../../components/Loading/Loading';
+import { Layout as LayoutRoot, Form, Input, Checkbox, Button } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Layout } from 'src/components/Admin';
+import styled, { css } from 'styled-components';
 
-const Wrapper = styled(Flex)`
-  padding: 2rem;
+const { Content } = LayoutRoot;
+
+const ContentLoginStyle = css`
+  max-width: 300px;
+  margin-top: 50px;
 `;
 
-const FieldWrapper = styled.div`
-  padding: 0;
-  margin-bottom: 10px;
-  input {
-    width: 100%;
-    padding: 5px;
-  }
-`;
-
-const FormLabel = styled.p`
-  padding: 0;
-  margin-bottom: 10px;
+const WrapperForm = styled(Content)`
+  ${ContentLoginStyle}
 `;
 
 type LoginType = {
@@ -46,6 +39,7 @@ const Admin = () => {
     const res = await useLogin({
       variables: {
         ...values,
+        role_id: 1,
       },
     });
     setUserData(res.data.login);
@@ -63,64 +57,61 @@ const Admin = () => {
     return <UserProfile {...userData.user} />;
   }
 
-  const initialValues = {
-    usernameOrEmail: '',
-    password: '',
-    role_id: '',
-  };
-
   return (
-    <Wrapper
+    <Flex
       sx={{
+        height: '100%',
         justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
-      <Grid
-        sx={{
-          width: ['90%', '70%', '25%'],
-        }}
-      >
-        <Formik
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            onLogin({
-              ...values,
-              role_id: 1,
-            });
-          }}
-          validationSchema={() => {
-            return Yup.object().shape({
-              usernameOrEmail: Yup.string().required('Username is Required!'),
-              password: Yup.string().required('Password is Required!'),
-            });
+      <WrapperForm>
+        <Text
+          sx={{
+            fontSize: 30,
+            textAlign: 'center',
+            marginBottom: 20,
           }}
         >
-          {({ values, errors, touched, handleSubmit, isSubmitting }) => (
-            <Form onSubmit={handleSubmit} method="post">
-              <FieldWrapper>
-                <FormLabel>Username / Email</FormLabel>
-                <Box>
-                  <Field name="usernameOrEmail" type="text" value={values.usernameOrEmail} />
-                </Box>
-                {errors.usernameOrEmail && touched.usernameOrEmail && (
-                  <p>{errors.usernameOrEmail}</p>
-                )}
-              </FieldWrapper>
-              <FieldWrapper>
-                <FormLabel>Password</FormLabel>
-                <Box>
-                  <Field name="password" type="password" value={values.password} />
-                </Box>
-                {errors.password && touched.password && <p>{errors.password}</p>}
-              </FieldWrapper>
-              <Button disabled={isSubmitting} size="small" variant="outlined">
-                Login
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      </Grid>
-    </Wrapper>
+          Admin Portal
+        </Text>
+        <Form
+          name="admin_login"
+          className="login-form"
+          initialValues={{ remember: false }}
+          onFinish={onLogin}
+        >
+          <Form.Item
+            name="usernameOrEmail"
+            rules={[{ required: true, message: 'Please input your Email / Username!' }]}
+          >
+            <Input
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Username"
+            />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: 'Please input your Password!' }]}
+          >
+            <Input
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              type="password"
+              placeholder="Password"
+            />
+          </Form.Item>
+          <Form.Item>
+            <Form.Item name="remember" valuePropName="checked" noStyle>
+              <Checkbox>Remember me</Checkbox>
+            </Form.Item>
+          </Form.Item>
+
+          <Button size="large" block type="primary" htmlType="submit" className="login-form-button">
+            Log in
+          </Button>
+        </Form>
+      </WrapperForm>
+    </Flex>
   );
 };
 export default withApollo(Admin);
