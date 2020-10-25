@@ -45,14 +45,14 @@ type RegisterType = {
 };
 
 const Register = () => {
-  const [useRegister] = useMutation(REGISTER);
+  const [UseRegister] = useMutation(REGISTER);
   const [loader, setLoader] = useState(false);
   const { loading, error, data } = useQuery(LOGGED_IN);
   const [userData, setUserData] = useState<any>();
 
   const onRegister = async (values: RegisterType) => {
     setLoader(true);
-    const res = await useRegister({
+    const res = await UseRegister({
       variables: {
         ...values,
       },

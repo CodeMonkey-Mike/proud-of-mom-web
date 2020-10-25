@@ -1,10 +1,10 @@
 import { useMutation } from '@apollo/client';
 import styled from 'styled-components';
 import { Box } from 'theme-ui';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import Button from 'src/atoms/Button';
 import { withApollo } from 'src/helper/apollo';
-import { UserInformationTypes } from 'src/Types/User';
+import { UserInformationTypes } from 'src/types/User';
 import { LOGOUT } from '../../graphql/mutation/user.mutattion';
 
 const Wrapper = styled.div`
@@ -17,11 +17,11 @@ const Wrapper = styled.div`
 `;
 
 const Profile = ({ username, email }: UserInformationTypes) => {
-  const [useLogout] = useMutation(LOGOUT);
-
+  const [UseLogout] = useMutation(LOGOUT);
+  const router = useRouter();
   const onLogout = () => {
-    useLogout().then((res) => {
-      res.data.logout && Router.reload();
+    UseLogout().then((res) => {
+      res.data.logout && router.replace('/admin/login');
     });
   };
   return (

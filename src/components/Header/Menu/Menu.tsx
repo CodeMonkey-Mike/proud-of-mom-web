@@ -7,11 +7,11 @@ import { MainMenu } from './Menu.style';
 const MENU_ITEMS = [
   {
     link: HOME_PAGE,
-    label: 'Home'
+    label: 'Home',
   },
   {
     link: ABOUT,
-    label: 'About'
+    label: 'About',
   },
 ];
 

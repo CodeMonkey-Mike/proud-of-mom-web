@@ -13,6 +13,13 @@ export default class CustomDocument extends Document {
         <body>
           <Main />
           <NextScript />
+          <style jsx global>{`
+            /* Other global styles such as 'html, body' etc... */
+
+            #__next {
+              height: 100%;
+            }
+          `}</style>
         </body>
       </Html>
     );
