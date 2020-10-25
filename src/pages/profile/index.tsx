@@ -4,7 +4,7 @@ import { Box } from 'theme-ui';
 import { useRouter } from 'next/router';
 import Button from 'src/atoms/Button';
 import { withApollo } from 'src/helper/apollo';
-import { UserInformationTypes } from 'src/types/User';
+import { UserInformationTypes } from 'src/types';
 import { LOGOUT } from '../../graphql/mutation/user.mutattion';
 
 const Wrapper = styled.div`

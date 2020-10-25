@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Table, message, Input, Button, Space, Row, Col, Modal, Switch } from 'antd';
 import { withApollo } from 'src/helper/apollo';
+import { UserInformationTypes } from 'src/types';
 import { useQuery, useMutation } from '@apollo/client';
 import { USER_LIST } from 'src/graphql/query/user.query';
 import { DELETE, REGISTER, UPDATE_ROLE } from 'src/graphql/mutation/user.mutattion';
 import Loading from 'src/components/Loading/Loading';
-import { UserInformationTypes } from 'src/types/User';
 import { WarningOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { AdminLogo as Logo, MainMenu, DashboardHeader as Header } from 'src/components/Admin';
 import Add from 'src/components/Admin/Add/Add';
