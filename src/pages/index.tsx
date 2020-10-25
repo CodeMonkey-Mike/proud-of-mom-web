@@ -1,6 +1,5 @@
-import React from 'react'; 
+import React from 'react';
 import Head from 'next/head';
-import Register from './register';
 import { withApollo } from 'src/helper/apollo';
 
 const Index: React.FC = () => {
@@ -9,7 +8,6 @@ const Index: React.FC = () => {
       <Head>
         <meta name="robots" content="noindex, nofollow" />
       </Head>
-      <Register />
     </>
   );
 };

@@ -11,7 +11,7 @@ const ButtonStyled = styled.button`
 `;
 
 export type ButtonProps = {
-  children: any;
+  children: React.ReactChild;
   onClick?: (e: any) => void;
   color?: string;
   variant?: string;

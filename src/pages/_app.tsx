@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from 'src/theme';
 import Layout from 'src/components/Layout/Layout';
 import { GlobalStyle } from 'src/styled/global.style';
+import 'antd/dist/antd.css';
 
 export default function NextApp({ Component, pageProps, router }: AppProps) {
   if (router.pathname.includes('admin')) {

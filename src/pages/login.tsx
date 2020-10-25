@@ -42,14 +42,14 @@ type LoginType = {
 };
 
 const Login = () => {
-  const [useLogin] = useMutation(LOGIN);
+  const [UseLogin] = useMutation(LOGIN);
   const [loader, setLoader] = useState(false);
   const { loading, error, data } = useQuery(LOGGED_IN);
   const [userData, setUserData] = useState<any>();
 
   const onLogin = async (values: LoginType) => {
     setLoader(true);
-    const res = await useLogin({
+    const res = await UseLogin({
       variables: {
         ...values,
       },
