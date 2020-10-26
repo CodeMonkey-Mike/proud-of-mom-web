@@ -1,5 +1,5 @@
 // Common part
-import React from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Modal, Button, Alert } from 'antd';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
@@ -35,6 +35,12 @@ const initialValues = {
 };
 
 const Add = ({ addUser, setAddUser, addNewUser, apiFallBackError }: AddType) => {
+  const formRef = useRef(null);
+  useMemo(() => {
+    if (apiFallBackError) {
+      formRef.current && (formRef.current as any).resetForm();
+    }
+  }, [apiFallBackError, formRef]);
   return (
     <Modal
       title="Add New User"
@@ -46,9 +52,9 @@ const Add = ({ addUser, setAddUser, addNewUser, apiFallBackError }: AddType) => 
     >
       <Formik
         initialValues={initialValues}
-        onSubmit={(values, { resetForm }) => {
+        innerRef={formRef}
+        onSubmit={(values) => {
           addNewUser(values);
-          apiFallBackError && resetForm();
         }}
         validationSchema={() => {
           return Yup.object().shape({
