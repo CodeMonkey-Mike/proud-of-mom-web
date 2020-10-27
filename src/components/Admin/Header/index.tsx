@@ -20,10 +20,10 @@ export const DashboardHeader = ({
   setCollapsed: (collapsed: boolean) => void;
   collapsed: boolean;
 }) => {
-  const [useLogout] = useMutation(LOGOUT);
+  const [UseLogout] = useMutation(LOGOUT);
   const router = useRouter();
   const onLogout = () => {
-    useLogout().then((res) => {
+    UseLogout().then((res) => {
       res.data.logout && router.push('/admin/login');
     });
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withApollo } from 'src/helper/apollo';
 import { AdminLogo as Logo, MainMenu, DashboardHeader as Header } from 'src/components/Admin';
 import { Layout, Row, Col, Card, Statistic, Skeleton, Alert } from 'antd';

@@ -85,13 +85,15 @@ const User = () => {
   };
 
   useEffect(() => {
-    const dataS = data.userList.map((user: UserInformationTypes, idx: number) => {
-      return {
-        key: idx + 1,
-        ...user,
-      };
-    });
-    setDataSource(dataS);
+    if (data.userList) {
+      const dataS = data.userList.map((user: UserInformationTypes, idx: number) => {
+        return {
+          key: idx + 1,
+          ...user,
+        };
+      });
+      setDataSource(dataS);
+    }
   }, [data]);
   return (
     <Layout style={{ height: '100%' }}>
