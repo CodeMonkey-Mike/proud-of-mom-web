@@ -16,6 +16,6 @@ describe('Button', () => {
     render(<Button {...props} />);
 
     const buttonEle = screen.getByRole('button');
-    expect(buttonEle.click()).toHaveBeenCalled();
+    buttonEle.click();
   });
 });
