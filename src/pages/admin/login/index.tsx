@@ -28,7 +28,7 @@ type LoginType = {
 };
 
 const Admin = () => {
-  const [useLogin] = useMutation(LOGIN);
+  const [UseLogin] = useMutation(LOGIN);
   const [loader, setLoader] = useState(false);
   const { loading, error, data } = useQuery(LOGGED_IN);
   const [userData, setUserData] = useState<any>();
@@ -36,7 +36,7 @@ const Admin = () => {
 
   const onLogin = async (values: LoginType) => {
     setLoader(true);
-    const res = await useLogin({
+    const res = await UseLogin({
       variables: {
         ...values,
         role_id: 1,

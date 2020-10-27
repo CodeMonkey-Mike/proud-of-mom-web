@@ -22,7 +22,7 @@ export interface RegisterType {
 }
 
 const User = () => {
-  const { loading, error, data } = useQuery(USER_LIST);
+  const { loading, error, data, refetch } = useQuery(USER_LIST);
   const [UseRegister] = useMutation(REGISTER);
   const [UseDelete] = useMutation(DELETE);
   const [UseUpdateRole] = useMutation(UPDATE_ROLE);
@@ -40,6 +40,7 @@ const User = () => {
     if (res.data.register.user) {
       setAddUser(false);
       setApiFallBackError(null);
+      refetch();
     }
     res.data.register.errors && setApiFallBackError(res.data.register.errors[0]);
   };
@@ -64,6 +65,7 @@ const User = () => {
         if (res.data.delete) {
           message.success('Deleted!');
           Modal.destroyAll();
+          refetch();
         }
       },
     });
@@ -78,17 +80,20 @@ const User = () => {
     });
     if (res.data.updateRole.user) {
       message.success('Role changed!');
+      refetch();
     }
   };
 
   useEffect(() => {
-    const dataS = data.userList.map((user: UserInformationTypes, idx: number) => {
-      return {
-        key: idx + 1,
-        ...user,
-      };
-    });
-    setDataSource(dataS);
+    if (data.userList) {
+      const dataS = data.userList.map((user: UserInformationTypes, idx: number) => {
+        return {
+          key: idx + 1,
+          ...user,
+        };
+      });
+      setDataSource(dataS);
+    }
   }, [data]);
   return (
     <Layout style={{ height: '100%' }}>
@@ -96,7 +101,7 @@ const User = () => {
         {/* Logo comp */}
         <Logo />
         {/* Menu comp */}
-        <MainMenu />
+        <MainMenu pageId={2} />
       </Sider>
       <Layout>
         <Add

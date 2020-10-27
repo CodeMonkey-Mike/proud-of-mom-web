@@ -4,9 +4,9 @@ import { Menu } from 'antd';
 import { HomeOutlined, UserOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 
-export const MainMenu = () => {
+export const MainMenu = ({ pageId }: { pageId: number }) => {
   return (
-    <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+    <Menu theme="dark" mode="inline" defaultSelectedKeys={[pageId.toString()]}>
       <Menu.Item key="1" icon={<HomeOutlined />}>
         <Link href="/admin/home">Home</Link>
       </Menu.Item>

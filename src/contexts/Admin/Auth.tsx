@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Loading from 'src/components/Loading/Loading';
 import { LOGGED_IN } from 'src/graphql/query/user.query';
 
@@ -15,7 +15,7 @@ const AuthProvider = (props: any) => {
   if (loading) {
     return <Loading text="Loading..." />;
   }
-  useMemo(() => {
+  useEffect(() => {
     if (data) setIsAuthenticated(true);
   }, [data]);
   return (
