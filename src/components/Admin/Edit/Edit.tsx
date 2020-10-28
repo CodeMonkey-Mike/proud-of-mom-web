@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Box } from 'theme-ui';
-import { RegisterType } from 'src/pages/admin/user';
+import { UserInformationTypes } from 'src/types';
 
 const FieldWrapper = styled.div`
   padding: 0;
@@ -22,45 +22,57 @@ const FormLabel = styled.p`
 `;
 
 type AddType = {
-  addUser?: boolean;
+  editUser?: boolean;
   apiFallBackError?: { field: string; message: string } | null;
-  setAddUser: () => void;
-  addNewUser: (values: RegisterType) => void;
+  setEditUser: () => void;
+  editInfoUser: (values: UserInformationTypes) => void;
+  userInfo: UserInformationTypes;
 };
 
-const initialValues = {
-  email: '',
-  username: '',
-  password: '',
-};
-
-export const Add = ({ addUser, setAddUser, addNewUser, apiFallBackError }: AddType) => {
+export const Edit = ({
+  userInfo,
+  editUser,
+  setEditUser,
+  editInfoUser,
+  apiFallBackError,
+}: AddType) => {
   const formRef = useRef(null);
   useMemo(() => {
     if (apiFallBackError) {
       formRef.current && (formRef.current as any).resetForm();
     }
-  }, [apiFallBackError, formRef]);
+    if (editUser) {
+      formRef.current &&
+        (formRef.current as any).setValues({
+          username: userInfo.username ? userInfo.username : '',
+          email: userInfo.email ? userInfo.email : '',
+        });
+    }
+  }, [apiFallBackError, formRef, editUser, userInfo]);
+
   return (
     <Modal
-      title="Add New User"
-      visible={addUser}
+      title="Edit User"
+      visible={editUser}
       onCancel={() => {
-        setAddUser();
+        setEditUser();
       }}
       footer={null}
     >
       <Formik
-        initialValues={initialValues}
+        initialValues={userInfo}
         innerRef={formRef}
         onSubmit={(values) => {
-          addNewUser(values);
+          if (userInfo.id)
+            editInfoUser({
+              id: userInfo.id,
+              ...values,
+            });
         }}
         validationSchema={() => {
           return Yup.object().shape({
             email: Yup.string().required('Email is required!').email('Invalid email'),
             username: Yup.string().required('Username is Required!'),
-            password: Yup.string().required('Password is Required!'),
           });
         }}
       >
@@ -85,18 +97,9 @@ export const Add = ({ addUser, setAddUser, addNewUser, apiFallBackError }: AddTy
                 <Alert message={errors.username} type="error" />
               )}
             </FieldWrapper>
-            <FieldWrapper>
-              <FormLabel>Password</FormLabel>
-              <Box marginBottom={1}>
-                <Field name="password" type="password" value={values.password} />
-              </Box>
-              {errors.password && touched.password && (
-                <Alert message={errors.password} type="error" />
-              )}
-            </FieldWrapper>
 
             <Button onClick={() => handleSubmit()} type="primary" block size="large">
-              Register
+              Update
             </Button>
           </Form>
         )}

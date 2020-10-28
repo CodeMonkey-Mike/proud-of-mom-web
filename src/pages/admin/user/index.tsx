@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Layout, Table, message, Input, Button, Space, Row, Col, Modal, Switch } from 'antd';
 import { withApollo } from 'src/helper/apollo';
 import { UserInformationTypes } from 'src/types';
 import { useQuery, useMutation } from '@apollo/client';
 import { USER_LIST } from 'src/graphql/query/user.query';
-import { DELETE, REGISTER, UPDATE_ROLE } from 'src/graphql/mutation/user.mutattion';
+import { DELETE, REGISTER, UPDATE_ROLE, UPDATE_USER } from 'src/graphql/mutation/user.mutattion';
 import Loading from 'src/components/Loading/Loading';
 import { WarningOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { AdminLogo as Logo, MainMenu, DashboardHeader as Header } from 'src/components/Admin';
-import Add from 'src/components/Admin/Add/Add';
+import { Add } from 'src/components/Admin';
+import { Edit } from 'src/components/Admin';
 import { Box, Flex } from 'theme-ui';
 
 const { Sider, Content } = Layout;
@@ -26,11 +27,19 @@ const User = () => {
   const [UseRegister] = useMutation(REGISTER);
   const [UseDelete] = useMutation(DELETE);
   const [UseUpdateRole] = useMutation(UPDATE_ROLE);
+  const [UseUpdateUser] = useMutation(UPDATE_USER);
   const [collapsed, setCollapsed] = useState(false);
   const [addUser, setAddUser] = useState(false);
-  const [dataSource, setDataSource] = useState([]);
+  const [editUser, setEditUser] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
+  const [dataSource, setDataSource] = useState<any[]>([]);
   const [apiFallBackError, setApiFallBackError] = useState(null);
 
+  if (loading) return <Loading text="Loading..." />;
+
+  if (error) return message.error(`Error! ${error.message}`);
+
+  //=> Start add new user func
   const onRegister = async (values: RegisterType) => {
     const res = await UseRegister({
       variables: {
@@ -45,9 +54,20 @@ const User = () => {
     res.data.register.errors && setApiFallBackError(res.data.register.errors[0]);
   };
 
-  if (loading) return <Loading text="Loading..." />;
-
-  if (error) return message.error(`Error! ${error.message}`);
+  const onUpdateUser = async (values: UserInformationTypes) => {
+    const res = await UseUpdateUser({
+      variables: {
+        ...values,
+      },
+    });
+    if (res.data.updateUser.user) {
+      message.success('User updated!');
+      setEditUser(false);
+      setApiFallBackError(null);
+      refetch();
+    }
+    res.data.updateUser.errors && setApiFallBackError(res.data.updateUser.errors[0]);
+  };
 
   const deletConfirm = (email: string) => {
     Modal.confirm({
@@ -78,11 +98,24 @@ const User = () => {
         role_id: role_id,
       },
     });
-    if (res.data.updateRole.user) {
+    if (res.data.updateUser.user) {
       message.success('Role changed!');
       refetch();
     }
   };
+
+  const onSearch = useCallback(
+    (v: string) => {
+      let result: any[] = [];
+      if (v.includes('@')) {
+        result = data.userList.filter((user: any) => user.email.includes(v));
+      } else {
+        result = data.userList.filter((user: any) => user.username.includes(v));
+      }
+      setDataSource(result);
+    },
+    [data]
+  );
 
   useEffect(() => {
     if (data.userList) {
@@ -110,6 +143,13 @@ const User = () => {
           setAddUser={() => setAddUser(!addUser)}
           addNewUser={onRegister}
         />
+        <Edit
+          userInfo={userInfo}
+          editUser={editUser}
+          apiFallBackError={apiFallBackError}
+          setEditUser={() => setEditUser(!editUser)}
+          editInfoUser={onUpdateUser}
+        />
         <Header setCollapsed={() => setCollapsed(!collapsed)} collapsed={collapsed} />
         <Content>
           <Box
@@ -126,7 +166,8 @@ const User = () => {
                 <Col span={12}>
                   <Search
                     placeholder="Email / Role"
-                    onSearch={() => console.log('aaa')}
+                    onSearch={(v) => onSearch(v)}
+                    onChange={(v) => onSearch(v.target.value)}
                     enterButton
                   />
                 </Col>
@@ -167,9 +208,17 @@ const User = () => {
               <Column
                 title="Action"
                 key="email"
-                render={({ email }) => (
+                render={({ email, ...rest }) => (
                   <Space size="middle">
-                    <Button type="primary">Edit</Button>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        setUserInfo({ email, ...rest });
+                        setEditUser(!editUser);
+                      }}
+                    >
+                      Edit
+                    </Button>
                     <Button danger onClick={() => deletConfirm(email)}>
                       Delete
                     </Button>

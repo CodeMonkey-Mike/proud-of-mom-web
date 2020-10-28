@@ -46,7 +46,24 @@ export const DELETE = gql`
 
 export const UPDATE_ROLE = gql`
   mutation updateRole($id: Float!, $role_id: Float!) {
-    updateRole(id: $id, role_id: $role_id) {
+    updateUser(id: $id, role_id: $role_id) {
+      errors {
+        field
+        message
+      }
+      user {
+        id
+        username
+        email
+        role_id
+      }
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation updateUser($id: Float!, $email: String!, $username: String!) {
+    updateUser(id: $id, email: $email, username: $username) {
       errors {
         field
         message
