@@ -4,8 +4,7 @@ import { Flex, Text } from 'theme-ui';
 import { withApollo } from 'src/helper/apollo';
 import { LOGIN } from 'src/graphql/mutation/user.mutattion';
 import { LOGGED_IN } from 'src/graphql/query/user.query';
-import Loading from 'src/components/Loading/Loading';
-import { Layout as LayoutRoot, Form, Input, Checkbox, Button } from 'antd';
+import { Layout as LayoutRoot, Form, Input, Checkbox, Button, Spin } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import styled, { css } from 'styled-components';
 import { useRouter } from 'next/router';
@@ -45,9 +44,6 @@ const Admin = () => {
     setUserData(res.data.login);
     setLoader(false);
   };
-  if (loader || loading) {
-    return <Loading text="Loading..." />;
-  }
   if (error) return `Error! ${error.message}`;
   if (userData && userData.errors && userData.errors.length > 0) {
     alert(`${userData.errors[0].field} : ${userData.errors[0].message}`);
@@ -75,41 +71,49 @@ const Admin = () => {
         >
           Admin Portal
         </Text>
-        <Form
-          name="admin_login"
-          className="login-form"
-          initialValues={{ remember: false }}
-          onFinish={onLogin}
-        >
-          <Form.Item
-            name="usernameOrEmail"
-            rules={[{ required: true, message: 'Please input your Email / Username!' }]}
+        <Spin spinning={loader || loading} tip="Loading...">
+          <Form
+            name="admin_login"
+            className="login-form"
+            initialValues={{ remember: false }}
+            onFinish={onLogin}
           >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Username"
-            />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: 'Please input your Password!' }]}
-          >
-            <Input
-              prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
-              placeholder="Password"
-            />
-          </Form.Item>
-          <Form.Item>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
+            <Form.Item
+              name="usernameOrEmail"
+              rules={[{ required: true, message: 'Please input your Email / Username!' }]}
+            >
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="Username"
+              />
             </Form.Item>
-          </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: 'Please input your Password!' }]}
+            >
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="Password"
+              />
+            </Form.Item>
+            <Form.Item>
+              <Form.Item name="remember" valuePropName="checked" noStyle>
+                <Checkbox>Remember me</Checkbox>
+              </Form.Item>
+            </Form.Item>
 
-          <Button size="large" block type="primary" htmlType="submit" className="login-form-button">
-            Log in
-          </Button>
-        </Form>
+            <Button
+              size="large"
+              block
+              type="primary"
+              htmlType="submit"
+              className="login-form-button"
+            >
+              Log in
+            </Button>
+          </Form>
+        </Spin>
       </WrapperForm>
     </Flex>
   );

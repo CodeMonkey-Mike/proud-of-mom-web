@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Table, message, Input, Button, Space, Row, Col, Modal, Switch } from 'antd';
 import { withApollo } from 'src/helper/apollo';
 import { UserInformationTypes } from 'src/types';
@@ -34,8 +34,6 @@ const User = () => {
   const [userInfo, setUserInfo] = useState({});
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [apiFallBackError, setApiFallBackError] = useState(null);
-
-  if (loading) return <Loading text="Loading..." />;
 
   if (error) return message.error(`Error! ${error.message}`);
 
@@ -104,21 +102,18 @@ const User = () => {
     }
   };
 
-  const onSearch = useCallback(
-    (v: string) => {
-      let result: any[] = [];
-      if (v.includes('@')) {
-        result = data.userList.filter((user: any) => user.email.includes(v));
-      } else {
-        result = data.userList.filter((user: any) => user.username.includes(v));
-      }
-      setDataSource(result);
-    },
-    [data]
-  );
+  const onSearch = (v: string) => {
+    let result: any[] = [];
+    if (v.includes('@')) {
+      result = data.userList.filter((user: any) => user.email.includes(v));
+    } else {
+      result = data.userList.filter((user: any) => user.username.includes(v));
+    }
+    setDataSource(result);
+  };
 
   useEffect(() => {
-    if (data.userList) {
+    if (data && data.userList) {
       const dataS = data.userList.map((user: UserInformationTypes, idx: number) => {
         return {
           key: idx + 1,
@@ -166,7 +161,7 @@ const User = () => {
                 <Col span={12}>
                   <Search
                     placeholder="Email / Role"
-                    onSearch={(v) => onSearch(v)}
+                    onSearch={onSearch}
                     onChange={(v) => onSearch(v.target.value)}
                     enterButton
                   />
@@ -189,43 +184,47 @@ const User = () => {
                 </Col>
               </Row>
             </Box>
-            <Table dataSource={dataSource}>
-              <Column title="User ID" dataIndex="id" key="id" sortOrder={'ascend'} />
-              <Column title="Username" dataIndex="username" key="username" />
-              <Column title="Email" dataIndex="email" key="email" />
-              <Column
-                title="Admin"
-                key="admin"
-                render={({ role_id, id }) => {
-                  return (
-                    <Switch
-                      defaultChecked={role_id === 1}
-                      onChange={() => handleChangeRole(id, role_id)}
-                    />
-                  );
-                }}
-              />
-              <Column
-                title="Action"
-                key="email"
-                render={({ email, ...rest }) => (
-                  <Space size="middle">
-                    <Button
-                      type="primary"
-                      onClick={() => {
-                        setUserInfo({ email, ...rest });
-                        setEditUser(!editUser);
-                      }}
-                    >
-                      Edit
-                    </Button>
-                    <Button danger onClick={() => deletConfirm(email)}>
-                      Delete
-                    </Button>
-                  </Space>
-                )}
-              />
-            </Table>
+            {loading ? (
+              <Loading text="Loading..." />
+            ) : (
+              <Table dataSource={dataSource}>
+                <Column title="User ID" dataIndex="id" key="id" sortOrder={'ascend'} />
+                <Column title="Username" dataIndex="username" key="username" />
+                <Column title="Email" dataIndex="email" key="email" />
+                <Column
+                  title="Admin"
+                  key="admin"
+                  render={({ role_id, id }) => {
+                    return (
+                      <Switch
+                        defaultChecked={role_id === 1}
+                        onChange={() => handleChangeRole(id, role_id)}
+                      />
+                    );
+                  }}
+                />
+                <Column
+                  title="Action"
+                  key="email"
+                  render={({ email, ...rest }) => (
+                    <Space size="middle">
+                      <Button
+                        type="primary"
+                        onClick={() => {
+                          setUserInfo({ email, ...rest });
+                          setEditUser(!editUser);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button danger onClick={() => deletConfirm(email)}>
+                        Delete
+                      </Button>
+                    </Space>
+                  )}
+                />
+              </Table>
+            )}
           </Box>
         </Content>
       </Layout>
