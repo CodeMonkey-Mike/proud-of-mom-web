@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 const PrivateRoute = ({ path }: any) => {
   const { isAuthenticated } = useContext(AuthContext);
   const router = useRouter();
-  console.log(isAuthenticated);
   if (typeof window !== 'undefined') {
     isAuthenticated ? router.replace(path) : router.replace(ADMIN_LOGIN_PAGE);
   }
