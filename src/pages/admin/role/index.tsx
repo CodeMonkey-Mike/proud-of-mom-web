@@ -10,12 +10,18 @@ import {
   Form,
   InputNumber,
   Popconfirm,
+  Spin,
 } from 'antd';
 import { withApollo } from 'src/helper/apollo';
 import { useQuery, useMutation } from '@apollo/client';
 import Loading from 'src/components/Loading/Loading';
 import { PlusCircleOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons';
-import { AdminLogo as Logo, MainMenu, DashboardHeader as Header } from 'src/components/Admin';
+import {
+  AdminLogo as Logo,
+  MainMenu,
+  DashboardHeader as Header,
+  FormModal,
+} from 'src/components/Admin';
 import { Box, Flex } from 'theme-ui';
 import { ROLE_LIST } from 'src/graphql/query/role.query';
 import { UPDATE_ROLE } from 'src/graphql/mutation/role.mution';
@@ -78,12 +84,29 @@ const EditableCell: React.FC<EditableCellProps> = ({
   );
 };
 
+const defaultFields = [
+  {
+    type: 'text',
+    name: 'name',
+    label: 'Name',
+    required: [{ required: true, message: 'Name is required.' }],
+  },
+  {
+    type: 'checkbox',
+    name: 'permission',
+    label: 'Permision',
+    required: [{ required: true, message: 'Permision is required.' }],
+  },
+];
+
 const Role = () => {
   const { loading, error, data, refetch } = useQuery(ROLE_LIST);
-  const [UseUpdateRole] = useMutation(UPDATE_ROLE);
+  const [UseUpdateRole, { loading: mutationLoading, error: mutationError }] = useMutation(
+    UPDATE_ROLE
+  );
   const [form] = Form.useForm();
   const [collapsed, setCollapsed] = useState(false);
-  const [addUser, setAddUser] = useState(false);
+  const [addRole, setAddRole] = useState(false);
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [editingKey, setEditingKey] = useState('');
 
@@ -194,13 +217,21 @@ const Role = () => {
       message.success('Role changed!');
     }
   };
+
+  const onAddRole = () => setAddRole(true);
+
   useMemo(() => data && data.updateRole && refetch(), [data, refetch]);
+
   useEffect(() => {
     data && data.roleList && setDataSource(data.roleList);
   }, [data]);
 
   if (error) {
     message.error(error.message);
+  }
+
+  if (mutationError) {
+    message.error(mutationError.message);
   }
 
   return (
@@ -212,6 +243,7 @@ const Role = () => {
         <MainMenu pageId={3} />
       </Sider>
       <Layout>
+        <FormModal fields={defaultFields} visible={addRole} onCancel={() => setAddRole(!addRole)} />
         <Header setCollapsed={() => setCollapsed(!collapsed)} collapsed={collapsed} />
         <Content>
           <Box
@@ -240,12 +272,12 @@ const Role = () => {
                     }}
                   >
                     <Button
-                      onClick={() => setAddUser(!addUser)}
+                      onClick={() => onAddRole()}
                       type="primary"
                       shape="round"
                       icon={<PlusCircleOutlined />}
                     >
-                      Add
+                      Add Role
                     </Button>
                   </Flex>
                 </Col>
@@ -254,22 +286,24 @@ const Role = () => {
             {loading ? (
               <Loading text="Loading..." />
             ) : (
-              <Form form={form} component={false}>
-                <Table
-                  components={{
-                    body: {
-                      cell: EditableCell,
-                    },
-                  }}
-                  bordered
-                  dataSource={dataSource}
-                  columns={mergedColumns}
-                  rowClassName="editable-row"
-                  pagination={{
-                    onChange: cancel,
-                  }}
-                />
-              </Form>
+              <Spin spinning={mutationLoading}>
+                <Form form={form} component={false}>
+                  <Table
+                    components={{
+                      body: {
+                        cell: EditableCell,
+                      },
+                    }}
+                    bordered
+                    dataSource={dataSource}
+                    columns={mergedColumns}
+                    rowClassName="editable-row"
+                    pagination={{
+                      onChange: cancel,
+                    }}
+                  />
+                </Form>
+              </Spin>
             )}
           </Box>
         </Content>
