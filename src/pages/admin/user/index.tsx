@@ -3,6 +3,7 @@ import { Layout, Table, message, Input, Button, Space, Row, Col, Modal, Switch }
 import { withApollo } from 'src/helper/apollo';
 import { UserInformationTypes } from 'src/types';
 import { useQuery, useMutation } from '@apollo/client';
+import { Box, Flex } from 'theme-ui';
 import { USER_LIST } from 'src/graphql/query/user.query';
 import { DELETE, REGISTER, UPDATE_ROLE, UPDATE_USER } from 'src/graphql/mutation/user.mutattion';
 import Loading from 'src/components/Loading/Loading';
@@ -10,7 +11,6 @@ import { WarningOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { AdminLogo as Logo, MainMenu, DashboardHeader as Header } from 'src/components/Admin';
 import { Add } from 'src/components/Admin';
 import { Edit } from 'src/components/Admin';
-import { Box, Flex } from 'theme-ui';
 
 const { Sider, Content } = Layout;
 const { Search } = Input;
