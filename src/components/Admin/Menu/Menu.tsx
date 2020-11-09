@@ -21,7 +21,7 @@ export const MainMenu = ({ pageId }: { pageId: number }) => {
           <Link href="/admin/user">Users</Link>
         </Menu.Item>
         <Menu.Item key="3" icon={<KeyOutlined />}>
-          <Link href="/admin/role">Role</Link>
+          <Link href="/admin/role">Roles</Link>
         </Menu.Item>
       </SubMenu>
     </Menu>

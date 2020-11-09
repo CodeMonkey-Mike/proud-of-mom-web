@@ -15,14 +15,14 @@ import {
 import { withApollo } from 'src/helper/apollo';
 import { useQuery, useMutation } from '@apollo/client';
 import Loading from 'src/components/Loading/Loading';
-import { PlusCircleOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons';
+import { EditOutlined, SaveOutlined } from '@ant-design/icons';
 import {
   AdminLogo as Logo,
   MainMenu,
   DashboardHeader as Header,
   FormModal,
 } from 'src/components/Admin';
-import { Box, Flex } from 'theme-ui';
+import { Box } from 'theme-ui';
 import { ROLE_LIST } from 'src/graphql/query/role.query';
 import { UPDATE_ROLE } from 'src/graphql/mutation/role.mution';
 
@@ -182,9 +182,6 @@ const Role = () => {
             >
               Edit
             </Button>
-            <Button danger disabled={!!editingKey} onClick={() => console.log('delete')}>
-              Delete
-            </Button>
           </>
         );
       },
@@ -218,7 +215,7 @@ const Role = () => {
     }
   };
 
-  const onAddRole = () => setAddRole(true);
+  // const onAddRole = () => setAddRole(true);
 
   useMemo(() => data && data.updateRole && refetch(), [data, refetch]);
 
@@ -264,22 +261,6 @@ const Role = () => {
                     onChange={(v) => onSearch(v.target.value)}
                     enterButton
                   />
-                </Col>
-                <Col span={12}>
-                  <Flex
-                    sx={{
-                      justifyContent: 'flex-end',
-                    }}
-                  >
-                    <Button
-                      onClick={() => onAddRole()}
-                      type="primary"
-                      shape="round"
-                      icon={<PlusCircleOutlined />}
-                    >
-                      Add Role
-                    </Button>
-                  </Flex>
                 </Col>
               </Row>
             </Box>
