@@ -12,7 +12,7 @@ export interface Field {
   name: string;
   required?: FieldRule[];
   checkBoxOptions?: [{ label: string; value: string | number }];
-  checkBoxDefaultValue?: [value: string | number];
+  checkBoxDefaultValue?: any[];
 }
 
 export interface FormModalProps {
