@@ -1,17 +1,13 @@
 import React from 'react';
-import NavLink from 'src/components/NavLink/NavLink';
+import { NavLink } from 'src/components';
 import Logo from 'src/components/Logo/Logo';
-import { ABOUT, HOME_PAGE } from 'src/contants/navigation';
+import { LOGIN } from 'src/contants/navigation';
 import { MainMenu } from './Menu.style';
 
 const MENU_ITEMS = [
   {
-    link: HOME_PAGE,
-    label: 'Home',
-  },
-  {
-    link: ABOUT,
-    label: 'About',
+    link: LOGIN,
+    label: 'login',
   },
 ];
 

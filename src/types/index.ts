@@ -4,4 +4,5 @@ export interface UserInformationTypes {
   username?: string;
   email?: string;
   role_id?: number;
+  profile_picture?: string;
 }

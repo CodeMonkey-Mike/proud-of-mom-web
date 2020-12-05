@@ -1,5 +1,6 @@
 export const HOME_PAGE = '/';
 export const ABOUT = '/about';
+export const LOGIN = '/login';
 
 // ADMIN NAVIGATION
 

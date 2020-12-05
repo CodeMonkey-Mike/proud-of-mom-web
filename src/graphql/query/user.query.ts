@@ -7,6 +7,7 @@ export const LOGGED_IN = gql`
       username
       role_id
       email
+      profile_picture
     }
   }
 `;
@@ -18,6 +19,7 @@ export const USER_LIST = gql`
       username
       role_id
       email
+      profile_picture
     }
   }
 `;

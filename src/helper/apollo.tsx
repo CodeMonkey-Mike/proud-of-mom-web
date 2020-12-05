@@ -1,7 +1,14 @@
 import { useMemo } from 'react';
 import Head from 'next/head';
-import { ApolloProvider, ApolloClient, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import {
+  ApolloLink,
+  ApolloProvider,
+  ApolloClient,
+  InMemoryCache,
+  NormalizedCacheObject,
+} from '@apollo/client';
 import { NextPage } from 'next';
+import { createUploadLink } from 'apollo-upload-client';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
@@ -16,7 +23,9 @@ function createIsomorphLink() {
 function createApolloClient(initialState = {}) {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: createIsomorphLink(),
+    link: ApolloLink.from([
+      createUploadLink({ uri: process.env.NEXT_PUBLIC_API_URL, credentials: 'include' }),
+    ]),
     cache: new InMemoryCache().restore(initialState),
   });
 }

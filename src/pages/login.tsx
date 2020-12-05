@@ -65,9 +65,9 @@ const Login = () => {
   if (userData && userData.errors && userData.errors.length > 0) {
     alert(`${userData.errors[0].field} : ${userData.errors[0].message}`);
   } else if (data && data.me) {
-    return <UserProfile {...data.me} />;
+    //
   } else if (userData && userData.user) {
-    return <UserProfile {...userData.user} />;
+    //
   }
 
   const initialValues = {
@@ -112,7 +112,7 @@ const Login = () => {
         )}
       </Formik>
       <Text>
-        Don't have an account? <Link href="/">Register.</Link>
+        Don't have an account? <Link href="/register">Register.</Link>
       </Text>
     </Wrapper>
   );
