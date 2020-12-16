@@ -1,9 +1,20 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
+import { Flex } from 'theme-ui';
 
 const rotate = keyframes`
   from {transform: rotate(0deg);}
   to {transform: rotate(360deg);}
+`;
+
+const Backdrop = styled(Flex)`
+  position: absolute;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
 `;
 
 const Spinner = styled.div`
@@ -20,8 +31,10 @@ const Spinner = styled.div`
   animation-timing-function: linear;
 `;
 
-const Loader = (color) => {
-  return <Spinner {...color} />;
+export const Loader = ({ loading }: { loading: boolean }) => {
+  return (
+    <Backdrop hidden={!loading} sx={{ justifyContent: 'center', alignItems: 'center' }}>
+      <Spinner />
+    </Backdrop>
+  );
 };
-
-export default Loader;

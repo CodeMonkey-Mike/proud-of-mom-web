@@ -1,15 +1,16 @@
 import React from 'react';
 import Head from 'next/head';
-import { withApollo } from 'src/helper/apollo';
+import { Box } from 'theme-ui';
 
-const Index: React.FC = () => {
+const Index = () => {
   return (
     <>
       <Head>
         <meta name="robots" content="noindex, nofollow" />
       </Head>
+      <Box sx={{ padding: 100, textAlign: 'center' }}>Welcome to Proud of Mom site!</Box>
     </>
   );
 };
 
-export default withApollo(Index);
+export default Index;

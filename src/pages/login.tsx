@@ -1,15 +1,17 @@
-import { useQuery, useMutation } from '@apollo/client';
+import React, { useEffect } from 'react';
+import { useMutation } from '@apollo/client';
 import styled from 'styled-components';
 import Link from 'next/link';
+import { Alert } from 'antd';
 import * as Yup from 'yup';
+import { Loader } from 'src/components';
 import { Formik, Form, Field } from 'formik';
 import { withApollo } from '../helper/apollo';
-import { useState } from 'react';
 import { LOGIN } from '../graphql/mutation/user.mutattion';
-import { LOGGED_IN } from '../graphql/query/user.query';
 import Button from 'src/atoms/Button';
-import Loading from '../components/Loading/Loading';
-import UserProfile from './profile';
+import { useRouter } from 'next/router';
+import { PROFILE } from 'src/contants';
+import { AuthContext } from 'src/contexts/auth/auth.context';
 
 const Wrapper = styled.div`
   padding: 2rem 0;
@@ -41,42 +43,35 @@ type LoginType = {
   password: string;
 };
 
-const Login = () => {
-  const [UseLogin] = useMutation(LOGIN);
-  const [loader, setLoader] = useState(false);
-  const { loading, error, data } = useQuery(LOGGED_IN);
-  const [userData, setUserData] = useState<any>();
+const initialValues = {
+  usernameOrEmail: '',
+  password: '',
+};
 
-  const onLogin = async (values: LoginType) => {
-    setLoader(true);
-    const res = await UseLogin({
+const Login = () => {
+  const route = useRouter();
+  const { authDispatch } = React.useContext<any>(AuthContext);
+  const [UseLogin, { data, loading, error }] = useMutation(LOGIN);
+
+  const onLogin = (values: LoginType) => {
+    UseLogin({
       variables: {
         ...values,
       },
     });
-    setUserData(res.data.login);
-    setLoader(false);
   };
-  if (loader || loading) {
-    return <Loading text="Loading..." />;
-  }
-  if (error) return `Error! ${error.message}`;
 
-  if (userData && userData.errors && userData.errors.length > 0) {
-    alert(`${userData.errors[0].field} : ${userData.errors[0].message}`);
-  } else if (data && data.me) {
-    //
-  } else if (userData && userData.user) {
-    //
-  }
-
-  const initialValues = {
-    usernameOrEmail: '',
-    password: '',
-  };
+  useEffect(() => {
+    if (data && data.login && data.login.user) {
+      authDispatch({ type: 'SIGNIN_SUCCESS' });
+      route.push(PROFILE);
+    }
+  }, [data, route, authDispatch]);
 
   return (
     <Wrapper>
+      {error && <Alert type="error" message={error.message} />}
+      <Loader loading={loading} />
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {

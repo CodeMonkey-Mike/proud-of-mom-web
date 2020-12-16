@@ -5,6 +5,7 @@ import { theme } from 'src/theme';
 import Layout from 'src/components/Layout/Layout';
 import { GlobalStyle } from 'src/styled/global.style';
 import 'antd/dist/antd.css';
+import { AuthProvider } from 'src/contexts/auth/auth.provider';
 
 export default function NextApp({ Component, pageProps, router }: AppProps) {
   if (router.pathname.includes('admin')) {
@@ -17,9 +18,11 @@ export default function NextApp({ Component, pageProps, router }: AppProps) {
   }
   return (
     <ThemeProvider theme={theme}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <AuthProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </AuthProvider>
       <GlobalStyle />
     </ThemeProvider>
   );

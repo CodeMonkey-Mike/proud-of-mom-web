@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import Loading from 'src/components/Loading/Loading';
+import { Loader } from 'src/components';
 import { LOGGED_IN } from 'src/graphql/query/user.query';
 
 type AuthProps = {
@@ -12,11 +12,8 @@ export const AuthContext = React.createContext({} as AuthProps);
 const AuthProvider = (props: any) => {
   const { loading, data } = useQuery(LOGGED_IN);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  if (loading) {
-    return <Loading text="Loading..." />;
-  }
   useEffect(() => {
-    if (data) setIsAuthenticated(true);
+    if (data.user) setIsAuthenticated(true);
   }, [data]);
   return (
     <AuthContext.Provider
@@ -24,6 +21,7 @@ const AuthProvider = (props: any) => {
         isAuthenticated,
       }}
     >
+      <Loader loading={loading} />
       {props.children}
     </AuthContext.Provider>
   );

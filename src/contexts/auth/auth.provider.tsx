@@ -1,9 +1,10 @@
 import React, { useReducer } from 'react';
+import { getCookie } from 'src/helper/session';
 import { AuthContext } from './auth.context';
 
 const isBrowser = typeof window !== 'undefined';
 const INITIAL_STATE = {
-  isAuthenticated: isBrowser && !!localStorage.getItem('access_token'),
+  isAuthenticated: isBrowser && !!getCookie('pom:sess'),
   currentForm: 'signIn',
 };
 
