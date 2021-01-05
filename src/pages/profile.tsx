@@ -12,6 +12,7 @@ import { Avatar, Loader } from 'src/components';
 import { LOGGED_IN } from 'src/graphql/query/user.query';
 import _get from 'lodash/get';
 import { AuthContext } from 'src/contexts/auth/auth.context';
+import { Images } from 'src/assets';
 
 const Wrapper = styled.div`
   padding: 2rem;
@@ -56,12 +57,11 @@ const Profile = () => {
     fileInput && fileInput.click();
   }, []);
 
-  const avatar = useMemo(() => data && data.me && data.me.profile_picture, [data]);
+  const avatar = useMemo(() => Images.defaultAvatar, []);
 
   useEffect(() => {
     refetch();
   }, [refetch]);
-
   return (
     <Wrapper>
       {error && <Alert message={error} type="error" />}
