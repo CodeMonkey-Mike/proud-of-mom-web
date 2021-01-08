@@ -26,8 +26,9 @@ const Profile = () => {
   const { authDispatch } = useContext<any>(AuthContext);
   const { loading, error, data, refetch } = useQuery(LOGGED_IN);
   const [UseLogout] = useMutation(LOGOUT);
-  const [Upload] = useMutation(UPLOAD);
+  const [Upload, { loading: uploadSubmitting }] = useMutation(UPLOAD);
   const router = useRouter();
+  const picUrl = useMemo(() => _get(data, 'me.info.picture'), [data]);
   const onLogout = () => {
     UseLogout().then((res) => {
       authDispatch({ type: 'SIGN_OUT' });
@@ -57,7 +58,7 @@ const Profile = () => {
     fileInput && fileInput.click();
   }, []);
 
-  const avatar = useMemo(() => Images.defaultAvatar, []);
+  const avatar = useMemo(() => picUrl || Images.defaultAvatar, [picUrl]);
 
   useEffect(() => {
     refetch();
@@ -65,7 +66,7 @@ const Profile = () => {
   return (
     <Wrapper>
       {error && <Alert message={error} type="error" />}
-      <Loader loading={loading} />
+      <Loader loading={loading || uploadSubmitting} />
       {data && data.me && (
         <Box>
           <Form>
