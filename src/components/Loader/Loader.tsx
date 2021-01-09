@@ -8,7 +8,7 @@ const rotate = keyframes`
 `;
 
 const Backdrop = styled(Flex)`
-  position: absolute;
+  position: fixed;
   z-index: 9999;
   background-color: rgba(0, 0, 0, 0.2);
   width: 100%;
