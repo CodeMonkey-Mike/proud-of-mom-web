@@ -10,6 +10,7 @@ WORKDIR /usr/proudofmom/client
 COPY package.json ./
 COPY babel.config.js ./
 COPY next-env.d.ts ./
+COPY next.config.js ./
 COPY tsconfig.json ./
 COPY yarn.lock ./
 # COPY .env.local ./ 

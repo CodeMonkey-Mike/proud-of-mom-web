@@ -12,13 +12,13 @@ import { createUploadLink } from 'apollo-upload-client';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
-function createIsomorphLink() {
-  const { HttpLink } = require('@apollo/client/link/http');
-  return new HttpLink({
-    uri: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/graphql',
-    credentials: 'include',
-  });
-}
+// function createIsomorphLink() {
+//   const { HttpLink } = require('@apollo/client/link/http');
+//   return new HttpLink({
+//     uri: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/graphql',
+//     credentials: 'include',
+//   });
+// }
 
 function createApolloClient(initialState = {}) {
   return new ApolloClient({
