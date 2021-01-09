@@ -50,7 +50,7 @@ const Profile = () => {
         upload && refetch();
       }
     },
-    [refetch, data]
+    [refetch, data, Upload]
   );
 
   const onUpload = useCallback(() => {
