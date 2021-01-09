@@ -123,6 +123,7 @@ const User = () => {
       setDataSource(dataS);
     }
   }, [data]);
+
   return (
     <Layout style={{ height: '100%' }}>
       <Sider trigger={null} collapsible collapsed={collapsed}>

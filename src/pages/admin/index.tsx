@@ -1,8 +1,5 @@
-import React from 'react';
-import Routes from './routes';
 import { withApollo } from 'src/helper/apollo';
+import Home from './home';
 
-const Admin = () => {
-  return <Routes />;
-};
-export default withApollo(Admin);
+const Admin = withApollo(Home);
+export default Admin;

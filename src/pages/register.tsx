@@ -1,14 +1,17 @@
-import { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import React, { useEffect, useContext } from 'react';
+import { useMutation } from '@apollo/client';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
 import Button from 'src/atoms/Button';
 import { REGISTER } from '../graphql/mutation/user.mutattion';
-import UserProfile from './profile';
-import { LOGGED_IN } from 'src/graphql/query/user.query';
 import { withApollo } from 'src/helper/apollo';
+import { Alert } from 'antd';
+import { Loader } from 'src/components';
+import { PROFILE } from 'src/contants';
+import { useRouter } from 'next/router';
+import { AuthContext } from 'src/contexts/auth/auth.context';
 
 const Wrapper = styled.div`
   padding: 2rem 0;
@@ -29,14 +32,11 @@ const FormLabel = styled.p`
   padding: 0;
   margin-bottom: 10px;
 `;
+
 const Text = styled.p`
   margin-top: 10px;
   font-size: 14px;
 `;
-
-const Loading = ({ text }: { text: string }) => {
-  return <span>{text}</span>;
-};
 
 type RegisterType = {
   email: string;
@@ -45,25 +45,16 @@ type RegisterType = {
 };
 
 const Register = () => {
-  const [UseRegister] = useMutation(REGISTER);
-  const [loader, setLoader] = useState(false);
-  const { loading, error, data } = useQuery(LOGGED_IN);
-  const [userData, setUserData] = useState<any>();
-
+  const { authDispatch } = useContext<any>(AuthContext);
+  const [UseRegister, { loading, error, data }] = useMutation(REGISTER);
+  const route = useRouter();
   const onRegister = async (values: RegisterType) => {
-    setLoader(true);
-    const res = await UseRegister({
+    UseRegister({
       variables: {
         ...values,
       },
     });
-    setUserData(res.data.register);
-    setLoader(false);
   };
-  if (loader || loading) {
-    return <Loading text="Loading..." />;
-  }
-  if (error) return `Error! ${error.message}`;
 
   const initialValues = {
     email: '',
@@ -71,16 +62,17 @@ const Register = () => {
     password: '',
   };
 
-  if (data && data.errors && data.errors.length > 0) {
-    alert(`${data.errors[0].field} : ${data.errors[0].message}`);
-  } else if (data && data.me) {
-    return <UserProfile {...data.me} />;
-  } else if (userData && userData.user) {
-    return <UserProfile {...userData.user} />;
-  }
+  useEffect(() => {
+    if (data && data.register && data.register.user) {
+      authDispatch({ type: 'SIGNIN_SUCCESS' });
+      route.push(PROFILE);
+    }
+  }, [data, route, authDispatch]);
 
   return (
     <Wrapper>
+      {error && <Alert type="error" message={error.message} />}
+      <Loader loading={loading} />
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {

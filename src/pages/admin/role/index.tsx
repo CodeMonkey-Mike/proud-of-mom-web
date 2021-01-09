@@ -24,7 +24,7 @@ import {
 } from 'src/components/Admin';
 import { Box } from 'theme-ui';
 import { ROLE_LIST } from 'src/graphql/query/role.query';
-import { UPDATE_ROLE } from 'src/graphql/mutation/role.mution';
+import { UPDATE_ROLE } from 'src/graphql/mutation/role.mutation';
 
 const { Sider, Content } = Layout;
 const { Search } = Input;
