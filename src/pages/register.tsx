@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import Button from 'src/atoms/Button';
+import { Button } from 'src/atoms';
 import { REGISTER } from '../graphql/mutation/user.mutattion';
 import { withApollo } from 'src/helper/apollo';
 import { Alert } from 'antd';

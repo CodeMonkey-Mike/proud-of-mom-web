@@ -8,7 +8,7 @@ import { Loader } from 'src/components';
 import { Formik, Form, Field } from 'formik';
 import { withApollo } from '../helper/apollo';
 import { LOGIN } from '../graphql/mutation/user.mutattion';
-import Button from 'src/atoms/Button';
+import { Button } from 'src/atoms';
 import { useRouter } from 'next/router';
 import { PROFILE } from 'src/contants';
 import { AuthContext } from 'src/contexts/auth/auth.context';
