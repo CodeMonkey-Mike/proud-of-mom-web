@@ -10,7 +10,7 @@ const About = () => {
     <Wrapper>
       Welcome to the about page. Go to the{' '}
       <Link href="/">
-        <a>Home</a>
+        <a>Home </a>
       </Link>{' '}
       page.
     </Wrapper>
