@@ -2,7 +2,7 @@
 
 ## Tech Stack
 
-#### Major stacks
+#### Major stuff
 
 - [x] [Next.js](https://nextjs.org/)
 - [x] [Apollo Client](https://www.apollographql.com/docs/react/)
@@ -13,14 +13,14 @@
 
 #### Create custom components
 
-- [x] [styled-components](https://github.com/styled-components/styled-components)
+- [x] [Styled-components](https://github.com/styled-components/styled-components)
 - [x] [Styled System](https://github.com/styled-system/styled-system)
 - [x] [Storybook](https://github.com/storybookjs/storybook)'
 
 #### Test
 
 - [x] [Jest](https://github.com/facebook/jest)
-- [x] [ts-jest](https://github.com/kulshekhar/ts-jest)
+- [x] [Ts-jest](https://github.com/kulshekhar/ts-jest)
 - [x] [React Testing Library](https://github.com/testing-library/react-testing-library)
 
 #### Linter & Formatter
@@ -31,7 +31,7 @@
 
 #### Pre-commit checks
 
-- [x] [lint-staged](https://github.com/okonet/lint-staged)
+- [x] [Lint-staged](https://github.com/okonet/lint-staged)
 - [x] [Husky](https://github.com/typicode/husky)
 
 
@@ -39,29 +39,63 @@
 
 To communicate with server side before start you need to set it up with the server, go to the server repository: [Link](https://github.com/CodeMonkey-Mike/proud-of-mom-be).
 
-## Quick start 
+## Set up
 
-#### Start development 
 
-- Install node packages and run development mode.
+### Prerequisites
 
-`yarn && yarn dev`
+* [Install Yarn](https://yarnpkg.com/lang/en/docs/install/)
 
-#### Test
+### Install
 
-`yarn test`
+```
+$ git clone git@github.com:CodeMonkey-Mike/proud-of-mom-web.git
+$ cd proud-of-mom-web 
+$ yarn
+```
 
-#### Production build
+### Run
+By run the command below, the site will start at `localhost:3000`. This will auto-reload when there is any change in the source code.
 
-`yarn build`
+```
+$ yarn dev
+```
+### Connect to Graphql
 
-## Staging release and confirm for production release
+Pull and run `proudofmom-be` then change `NEXT_PUBLIC_API_URL` in `.env` file by `http://localhost:4000` at the root and restart the process: `$ yarn dev`
 
-- Merge the PR into master, at this step the automation process will be triggered.
+### Automation
 
-## Production release
+##### 1.  When creating a new PR, the new build will execute for that PR, then create a new domain for it.
 
-> ! One hint: for the first release, the `-auto` tag won't work completely, therefore we need to release by manual step to make sure the `-auto` tag and encasement will be worked afterward.
+```
+http://stage{PR_NUMBER}.proudofmom.com
+```
+
+##### 2.  When code is merged to master, will update the staging site automatically
+- After code reviewed, use `Squash and merge` at the bottom of pull request page. The pipeline will run after all checks passed the site will update.
+```
+http://staging.proudofmom.com
+```
+
+##### 3. After staging tested and passed. Create a tag and push to git, will update the production site automatically.
+
+Command line:
+- This action will run release script automatically which is pull a latest commit and collecting the message then increase previous version to new version.
+
+```
+$ yarn release -auto
+```
+The format of release tag:
+```
+vX.X.X
+```
+E.g v0.1.0
+
+Produciton url:
+```
+http://proudofmom.com
+```
 
 There are two kinds of release step:
 
@@ -70,7 +104,6 @@ There are two kinds of release step:
 Checkout branch master and run the command line:
 
 ```
-
 yarn release -auto
 
 ```
