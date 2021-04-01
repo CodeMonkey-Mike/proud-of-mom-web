@@ -22,8 +22,6 @@ const main = async () => {
     // const version = await exec('git describe --abbrev=0');
     // await exec(`git checkout tags/${version.stdout}`);
 
-    await exec('npm install');
-
     const SITE_URL = `${SITE_ORIGIN_DOMAIN}${CLIENT_ROOT.length > 0 ? CLIENT_ROOT : ''}`;
     if (!existsSync(`/var/www/${SITE_URL}`)) {
       await exec(`echo '${SUDO_PASSWORD}' | sudo -S mkdir /var/www/${SITE_URL}`);
@@ -38,6 +36,8 @@ const main = async () => {
       if (err) throw err;
       console.log('.env has been saved!');
     });
+
+    await exec('npm install');
     await exec('npm run build');
 
     console.log('Build successful');

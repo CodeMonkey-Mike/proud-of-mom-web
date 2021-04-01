@@ -111,14 +111,16 @@ const main = async () => {
         server_name stage${SITE_URL};
 
         location / {
-                proxy_pass http://127.0.0.1:${PREFIX}${CIRCLE_PULL_REQUEST};
-                proxy_http_version 1.1;
-                proxy_set_header Upgrade $http_upgrade;
-                proxy_set_header Connection 'upgrade';
-                proxy_set_header X-Real-IP  $remote_addr;
-                proxy_set_header X-Forwarded-For $remote_addr;
-                proxy_set_header Host $host;
-                proxy_cache_bypass $http_upgrade;
+            auth_basic "Restricted";
+            auth_basic_user_file htpasswd;
+            proxy_pass http://127.0.0.1:${PREFIX}${CIRCLE_PULL_REQUEST};
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header X-Real-IP  $remote_addr;
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
         }
       }`;
 
@@ -142,7 +144,7 @@ const main = async () => {
       `echo '${SUDO_PASSWORD}' | sudo -S cp ${SERVED_FOLDER}/${NGINX_FILE} /etc/nginx/sites-available/`
     );
     await exec(
-      `echo '${SUDO_PASSWORD}' | sudo -S cp ${SERVED_FOLDER}/${NGINX_FILE} /etc/nginx/sites-enabled/`
+      `echo '${SUDO_PASSWORD}' | sudo -S ln -s /etc/nginx/sites-available/${NGINX_FILE} /etc/nginx/sites-enabled/`
     );
     await exec(`echo '${SUDO_PASSWORD}' | sudo -S systemctl restart nginx`);
     //remove vh after cp
