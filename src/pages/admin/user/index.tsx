@@ -112,6 +112,7 @@ const User = () => {
     setDataSource(result);
   };
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (data && data.userList) {
       const dataS = data.userList.map((user: UserInformationTypes, idx: number) => {

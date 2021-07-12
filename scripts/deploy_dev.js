@@ -5,9 +5,8 @@ const child_process = require('child_process');
 const exec = util.promisify(child_process.exec);
 const { existsSync } = fs;
 
-const PREFIX = 410;
-const SERVED_FOLDER = '/home/dominitech/workspace/proudofmom.com/proud-of-mom-web';
-const ECOSYTEM_FILE = 'release/ecosystem.config.js';
+const PREFIX = 18;
+const ECOSYTEM_FILE = 'scripts/ecosystem.config.js';
 const SITE_ORIGIN_DOMAIN = 'proudofmom.com';
 
 const main = async () => {
@@ -24,35 +23,17 @@ const main = async () => {
     if (!CIRCLE_PULL_REQUEST_URL) {
       throw new Error(`Missing entry value: CIRCLE_PULL_REQUEST`);
     }
-    await exec('git fetch');
-    await exec(`git checkout master`);
-    await exec(`git pull origin master`);
-    await exec(`git checkout ${COMMIT_SHA}`);
 
     // parse CIRCLE_PULL_REQUEST
     const CIRCLE_PULL_REQUEST = CIRCLE_PULL_REQUEST_URL.split('/pull/')[1];
+    const SERVED_FOLDER = `/home/dominitech/workspace/proudofmom.com/proudofmom-web/${CIRCLE_PULL_REQUEST}`;
     const SITE_URL = `${CIRCLE_PULL_REQUEST}.${SITE_ORIGIN_DOMAIN}`;
-    if (!existsSync(`/var/www/stage${SITE_URL}`)) {
+    if (!existsSync(`/var/www/stage.${SITE_ORIGIN_DOMAIN}/stage${SITE_URL}`)) {
       await exec(
         `echo '${SUDO_PASSWORD}' | sudo -S mkdir /var/www/stage.${SITE_ORIGIN_DOMAIN}/stage${SITE_URL}`
       );
       console.log('Created folder:', `stage${SITE_URL}`);
     }
-    if (existsSync(`/var/www/stage${SITE_URL}/.env`)) {
-      await exec(
-        `echo '${SUDO_PASSWORD}' | sudo -S rm -rf /var/www/stage.${SITE_ORIGIN_DOMAIN}/stage${SITE_URL}/.env`
-      );
-      console.log('Removed env file in:', `stage${SITE_URL}`);
-    }
-    const _env_context = `NEXT_PUBLIC_API_URL=http://api-stage.proudofmom.com/graphql`;
-    fs.writeFile(`.env`, _env_context, 'utf8', (err) => {
-      if (err) throw err;
-      console.log('.env has been saved!');
-    });
-
-    await exec('npm run build');
-
-    console.log('Build successful');
     const port = Number([PREFIX, CIRCLE_PULL_REQUEST].join(''));
     // read/process package.json
     const packageJson = 'package.json';
@@ -64,12 +45,13 @@ const main = async () => {
     // the 2 enables pretty-printing and defines the number of spaces to use
     fs.writeFileSync(packageJson, JSON.stringify(pkg, null, 2));
 
+    // extract nodes
+    await exec('unzip -qq node_modules.zip');
+    await exec('unzip -qq .next.zip');
+
     // copy resource to serve folder
     await exec(
       `echo '${SUDO_PASSWORD}' | sudo -S cp ${SERVED_FOLDER}/package.json /var/www/stage.${SITE_ORIGIN_DOMAIN}/stage${SITE_URL}`
-    );
-    await exec(
-      `echo '${SUDO_PASSWORD}' | sudo -S cp ${SERVED_FOLDER}/.env /var/www/stage.${SITE_ORIGIN_DOMAIN}/stage${SITE_URL}`
     );
     await exec(
       `echo '${SUDO_PASSWORD}' | sudo -S cp -r ${SERVED_FOLDER}/.next /var/www/stage.${SITE_ORIGIN_DOMAIN}/stage${SITE_URL}`
@@ -102,6 +84,11 @@ const main = async () => {
     await exec(`/home/dominitech/.npm-global/bin/pm2 start ${ECOSYTEM_FILE}`);
     await exec('/home/dominitech/.npm-global/bin/pm2 save');
     console.log(`Starting app via port ${port}`);
+
+    // remove resource after copy
+    await exec(`rm -rf ./**`);
+    await exec(`rm -rf .next`);
+    await exec(`rm -rf .next.zip`);
 
     /// create virtual host
     const vh = `
@@ -143,15 +130,25 @@ const main = async () => {
     await exec(
       `echo '${SUDO_PASSWORD}' | sudo -S cp ${SERVED_FOLDER}/${NGINX_FILE} /etc/nginx/sites-available/`
     );
-    await exec(
-      `echo '${SUDO_PASSWORD}' | sudo -S ln -s /etc/nginx/sites-available/${NGINX_FILE} /etc/nginx/sites-enabled/`
-    );
+    try {
+      await exec(
+        `echo '${SUDO_PASSWORD}' | sudo -S ln -s /etc/nginx/sites-available/${NGINX_FILE} /etc/nginx/sites-enabled/`
+      );
+    } catch (e) {
+      console.log(`File /etc/nginx/sites-enabled/${NGINX_FILE} already existed!`);
+      await exec(`/home/dominitech/.npm-global/bin/pm2 reload stage${SITE_URL}`);
+    }
     await exec(`echo '${SUDO_PASSWORD}' | sudo -S systemctl restart nginx`);
     //remove vh after cp
     await exec(`echo '${SUDO_PASSWORD}' | sudo -S rm ${SERVED_FOLDER}/${NGINX_FILE}`);
+
     console.log('Deploy successful.');
     await exec(`exit`);
   } catch (e) {
+    // remove resource after copy
+    await exec(`rm -rf ./**`);
+    await exec(`rm -rf .next`);
+    await exec(`rm -rf .next.zip`);
     throw new Error(e.message);
   }
 };
