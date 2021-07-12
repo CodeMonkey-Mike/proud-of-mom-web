@@ -16,4 +16,4 @@ https://github.com/CodeMonkey-Mike/proud-of-mom-web/issues/<ISSUE_NUMBER>
 | ----------- | -------------------------------------- |
 | GraphQL PR  | (default)                              |
 | SITE API    |                                        |
-| Test URL    | https://stage{PR_NUMBER}.proudofmom.com|
+| Test URL    | http://stage{PR_NUMBER}.proudofmom.com|
