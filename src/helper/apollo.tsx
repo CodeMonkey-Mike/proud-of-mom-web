@@ -12,20 +12,32 @@ import { createUploadLink } from 'apollo-upload-client';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 
-// function createIsomorphLink() {
-//   const { HttpLink } = require('@apollo/client/link/http');
-//   return new HttpLink({
-//     uri: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/graphql',
-//     credentials: 'include',
-//   });
-// }
+const createApiEndpoint = () => {
+  if (
+    process.env.NODE_ENV == 'development' &&
+    process.env.NEXT_PUBLIC_API_URL?.includes('localhost')
+  ) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  return [
+    process.env.NEXT_PUBLIC_API_URL,
+    process.env.NEXT_PUBLIC_API_PR,
+    '.',
+    process.env.NEXT_PUBLIC_API_DOMAIN,
+    process.env.NEXT_PUBLIC_API_PATH,
+  ].join('');
+};
+
+export const client = new ApolloClient({
+  ssrMode: typeof window === 'undefined',
+  link: ApolloLink.from([createUploadLink({ uri: createApiEndpoint(), credentials: 'include' })]),
+  cache: new InMemoryCache(),
+});
 
 function createApolloClient(initialState = {}) {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: ApolloLink.from([
-      createUploadLink({ uri: process.env.NEXT_PUBLIC_API_URL, credentials: 'include' }),
-    ]),
+    link: ApolloLink.from([createUploadLink({ uri: createApiEndpoint(), credentials: 'include' })]),
     cache: new InMemoryCache().restore(initialState),
   });
 }
